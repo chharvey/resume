@@ -1,6 +1,9 @@
 const gulp = require('gulp')
 
 function dist() {
+	return gulp.src(['resume.ts', './src/tpl/*.ts'])
+		.pipe(typescript(tsconfig.compilerOptions))
+		.pipe(gulp.dest('./dist/'))
 }
 
 function test_out() {
