@@ -23,5 +23,8 @@
   "bugs": {
     "url": "https://github.com/chharvey/resume/issues"
   },
-  "homepage": "https://github.com/chharvey/resume#readme"
+  "homepage": "https://github.com/chharvey/resume#readme",
+  "devDependencies": {
+    "gulp": "^4.0.0"
+  }
 }
