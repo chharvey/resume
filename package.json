@@ -1,0 +1,27 @@
+{
+  "name": "resume",
+  "version": "0.0.0",
+  "private": true,
+  "description": "An HTML résumé generator using JSON-LD, Schema.org, and Typescript.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chharvey/resume.git"
+  },
+  "keywords": [
+    "resume",
+    "html",
+    "json-ld",
+    "schema-org",
+    "typescript"
+  ],
+  "author": "Chris Harvey <chrisharvey2pi@gmail.com> (https://chharvey.github.io/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/chharvey/resume/issues"
+  },
+  "homepage": "https://github.com/chharvey/resume#readme"
+}
