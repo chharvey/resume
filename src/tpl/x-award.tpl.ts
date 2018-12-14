@@ -1,6 +1,5 @@
 import * as path from 'path'
 
-import {Object as xjs_Object} from 'extrajs'
 import * as xjs from 'extrajs-dom'
 import {Processor} from 'template-processor'
 
@@ -20,18 +19,18 @@ const template = xjs.HTMLTemplateElement
 
 function instructions(frag: DocumentFragment, data: DataTypeXAward) {
 	/**
-	 * @summary Generate content from strings.
+	 * Generate content from strings.
 	 * @private
-	 * @param   {(string|Array<string>)} x a string, or array of strings
-	 * @returns {string} the string, or the joined array
+	 * @param   x a string, or array of strings
+	 * @returns the string, or the joined array
 	 */
-	function _content(x) { // TODO don’t use arrays for line breaks
-		return (xjs_Object.typeOf(x) === 'array') ? x.join('') : x
+	function _content(x: string[]|string): string { // FIXME don’t use arrays for line breaks
+		return (x instanceof Array) ? x.join('') : x
 	}
-	frag.querySelector('slot[name="text"]' ).innerHTML = _content(data.text)
-	frag.querySelector('slot[name="dates"]').innerHTML = data.dates
+	frag.querySelector('slot[name="text"]' ) !.innerHTML = _content(data.text)
+	frag.querySelector('slot[name="dates"]') !.innerHTML = data.dates
 
-	let subs = frag.querySelector('.o-ListAchv__Award > .o-ListAchv')
+	let subs = frag.querySelector('.o-ListAchv__Award > .o-ListAchv') !
 	if (data.sub_awards) {
 		subs.append(...data.sub_awards.map((s) => xAward.process(s)))
 	} else subs.remove()

@@ -12,9 +12,19 @@ STATE_DATA.push(...[
 ])
 
 
+export interface DataTypeXCity extends sdo.City {
+	address: sdo.PostalAddress & {
+		addressLocality: string;
+		addressRegion  : string;
+	};
+	geo: sdo.GeoCoordinates & {
+		latitude: number;
+		longitude: number;
+	};
+}
 interface OptsTypeXCity { // TODO make this an options param
 	/** the value of the `[itemprop]` attribute to write */
-	itemprop?: string;
+	$itemprop?: string;
 	/** should I display the full (non-abbreviated) region name? */
 	full?: boolean;
 }
@@ -23,15 +33,15 @@ const template = xjs.HTMLTemplateElement
 	.fromFileSync(path.join(__dirname, './x-city.tpl.html')) // NB relative to dist
 	.node
 
-function instructions(frag: DocumentFragment, data: sdo.City & OptsTypeXCity) {
-	new xjs.HTMLElement(frag.querySelector('[itemtype="http://schema.org/City"]'))
+function instructions(frag: DocumentFragment, data: DataTypeXCity & OptsTypeXCity) {
+	new xjs.Element(frag.querySelector('[itemtype="http://schema.org/City"]') !)
 		.attr('itemprop', data.$itemprop || null)
-	new xjs.HTMLElement(frag.querySelector('slot[name="address"]')).empty()
-		.append(xAddress.process(data.address, { regionName: true, $itemprop: 'address' }))
+	new xjs.Element(frag.querySelector('slot[name="address"]') !).empty()
+		.append(xAddress.process(data.address, { regionName: true }))
 
-	frag.querySelector('[itemprop="addressLocality"]'  ).textContent = data.address.addressLocality
-	frag.querySelector('[itemprop="latitude"]'         ).content     = data.geo.latitude
-	frag.querySelector('[itemprop="longitude"]'        ).content     = data.geo.longitude
+	frag.querySelector('[itemprop="addressLocality"]') !.textContent = data.address.addressLocality
+	;(frag.querySelector('[itemprop="latitude"]' ) as HTMLMetaElement).content = `${data.geo.latitude}`
+	;(frag.querySelector('[itemprop="longitude"]') as HTMLMetaElement).content = `${data.geo.longitude}`
 }
 
 /**
@@ -41,5 +51,5 @@ function instructions(frag: DocumentFragment, data: sdo.City & OptsTypeXCity) {
  * Washington, DC 20006
  * ```
  */
-const xCity: Processor<sdo.City & OptsTypeXCity, object> = new Processor(template, instructions)
+const xCity: Processor<DataTypeXCity & OptsTypeXCity, object> = new Processor(template, instructions)
 export default xCity

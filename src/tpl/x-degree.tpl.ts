@@ -18,13 +18,13 @@ const template = xjs.HTMLTemplateElement
 	.node
 
 function instructions(frag: DocumentFragment, data: DataTypeXDegree) {
-	frag.querySelector('[itemprop="name"]'       ).innerHTML   = data.field
-	frag.querySelector('[itemprop="ratingValue"]').textContent = data.gpa
+	frag.querySelector('[itemprop="name"]'       ) !.innerHTML   = data.field
+	frag.querySelector('[itemprop="ratingValue"]') !.textContent = `${data.gpa}`
 	if (data.year > 0) {
-		frag.querySelector('[itemprop="timeEarned"]'  ).textContent = data.year
-		frag.querySelector('.o-ListAchv__Date > small').remove()
+		frag.querySelector('[itemprop="timeEarned"]'  ) !.textContent = `${data.year}`
+		frag.querySelector('.o-ListAchv__Date > small') !.remove()
 	} else {
-		frag.querySelector('[itemprop="timeEarned"]').remove()
+		frag.querySelector('[itemprop="timeEarned"]') !.remove()
 	}
 }
 

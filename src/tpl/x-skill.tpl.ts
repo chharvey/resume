@@ -5,15 +5,27 @@ import * as sdo from 'schemaorg-jsd/dist/schemaorg' // TODO use an index file
 import {Processor} from 'template-processor'
 
 
+interface DataTypeXSkill extends sdo.Rating {
+	name: string;
+	ratingValue: number;
+}
+
 const template = xjs.HTMLTemplateElement
 	.fromFileSync(path.join(__dirname, './x-skill.tpl.html')) // NB relative to dist
 	.node
 
-function instructions(frag: DocumentFragment, data: sdo.Rating) {
-	frag.querySelector('dt'                      ).innerHTML   = data.name
-	frag.querySelector('[itemprop="ratingValue"]').value       = data.ratingValue
-	frag.querySelector('[itemprop="ratingValue"]').setAttribute('style', frag.querySelector('meter').getAttribute('style').replace('1', data.ratingValue)) // .style.setProperty('--fadein', this._level) // https://github.com/tmpvar/jsdom/issues/1895
-	frag.querySelector('slot[name="percentage"]' ).textContent = 100 * (+data.ratingValue)
+function instructions(frag: DocumentFragment, data: DataTypeXSkill) {
+	frag.querySelector('dt') !.innerHTML = data.name
+	frag.querySelector('slot[name="percentage"]') !.textContent = `${100 * data.ratingValue}`
+	new xjs.HTMLElement(frag.querySelector('[itemprop="ratingValue"]') as HTMLMeterElement)
+		.attr('value', data.ratingValue) // .value(data.ratingValue) // TODO xjs.HTMLMeterElement
+		.exe(function () {
+			try {
+				this.style('--fadein', data.ratingValue) // NB https://github.com/tmpvar/jsdom/issues/1895
+			} catch (e) {
+				this.node.setAttribute('style', this.node.getAttribute('style') !.replace('1', `${data.ratingValue}`))
+			}
+		})
 }
 
 /**
@@ -23,5 +35,5 @@ function instructions(frag: DocumentFragment, data: sdo.Rating) {
  * Washington, DC 20006
  * ```
  */
-const xSkill: Processor<sdo.Rating, object> = new Processor(template, instructions)
+const xSkill: Processor<DataTypeXSkill, object> = new Processor(template, instructions)
 export default xSkill

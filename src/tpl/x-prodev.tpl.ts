@@ -5,10 +5,15 @@ import {Date as xjs_Date} from 'extrajs'
 import * as sdo from 'schemaorg-jsd/dist/schemaorg' // TODO use an index file
 import {Processor} from 'template-processor'
 
-import xCity from './x-city.tpl'
+import xCity, {DataTypeXCity} from './x-city.tpl'
 
 
 interface DataTypeXProdev extends sdo.Event {
+	'@type': string;
+	name: string;
+	startDate: string;
+	endDate: string;
+	location: DataTypeXCity;
 	/** the number of professional development hours */
 	$pdh: number;
 }
@@ -20,17 +25,18 @@ const template = xjs.HTMLTemplateElement
 function instructions(frag: DocumentFragment, data: DataTypeXProdev) {
 	let date_start = new Date(data.startDate)
 	let date_end   = new Date(data.endDate  )
-	let pdh = data.$pdh || 0
+	let pdh = data.$pdh
 
-	frag.querySelector('.o-ListAchv__Award').setAttribute('itemtype', `http://schema.org/${data['@type']}`)
-	frag.querySelector('[itemprop="name"]').innerHTML = data.name
-	new xjs.HTMLElement(frag.querySelector('slot[name="city"]')).empty()
-	  .append(xCity.process(data.location || { "@type": "Place" }))
-	frag.querySelector('.o-ListAchv__Award > time').dateTime    = `PT${pdh}H`
-	frag.querySelector('.o-ListAchv__Award > time').textContent = `${pdh} hr`
+	frag.querySelector('.o-ListAchv__Award') !.setAttribute('itemtype', `http://schema.org/${data['@type']}`)
+	frag.querySelector('[itemprop="name"]') !.innerHTML = data.name
+	new xjs.Element(frag.querySelector('slot[name="city"]') !).empty()
+		.append(xCity.process(data.location))
+	new xjs.HTMLTimeElement(frag.querySelector('.o-ListAchv__Award > time') as HTMLTimeElement)
+		.dateTime(`PT${pdh}H`)
+		.textContent(`${pdh} hr`)
 
 	frag.querySelectorAll('[itemprop~="endDate"]').forEach(function (time) {
-		new xjs.HTMLTimeElement(time)
+		new xjs.HTMLTimeElement(time as HTMLTimeElement)
 			.dateTime(date_end)
 			.textContent(xjs_Date.format(date_end, 'j M Y'))
 	})
@@ -40,7 +46,7 @@ function instructions(frag: DocumentFragment, data: DataTypeXProdev) {
 		let same_UTC_date  = date_start.getUTCDate () === date_end.getUTCDate ()
 		let same_UTC_month = date_start.getUTCMonth() === date_end.getUTCMonth()
 		let same_UTC_year  = date_start.getFullYear() === date_end.getFullYear()
-		new xjs.HTMLTimeElement(frag.querySelector('[itemprop="startDate"]'))
+		new xjs.HTMLTimeElement(frag.querySelector('[itemprop="startDate"]') as HTMLTimeElement)
 			.dateTime(date_start)
 			.textContent([
 				date_start.getUTCDate(),
@@ -49,7 +55,7 @@ function instructions(frag: DocumentFragment, data: DataTypeXProdev) {
 			].join(''))
 		frag.querySelectorAll('.o-ListAchv__Date')[0].remove()
 	}
-	new xjs.HTMLElement(frag.querySelector('.o-ListAchv__Date')).trimInner()
+	new xjs.Node(frag.querySelector('.o-ListAchv__Date') !).trimInner()
 }
 
 /**
