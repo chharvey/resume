@@ -1,30 +1,18 @@
 import * as path from 'path'
 
-import * as xjs from 'extrajs-dom'
 import {Date as xjs_Date} from 'extrajs'
-import * as sdo from 'schemaorg-jsd/dist/schemaorg' // TODO use an index file
+import * as xjs from 'extrajs-dom'
 import {Processor} from 'template-processor'
 
-import xCity, {DataTypeXCity} from './x-city.tpl'
+import {JobPosition} from '../interfaces'
+import xCity from './x-city.tpl'
 
-
-interface DataTypeXPosition extends sdo.JobPosting {
-	$start: string;
-	$end?: string;
-	identifier: string;
-	title: string;
-	jobLocation: DataTypeXCity;
-	hiringOrganization: sdo.Organization & {
-		'@type': string;
-		name: string;
-	};
-}
 
 const template = xjs.HTMLTemplateElement
 	.fromFileSync(path.join(__dirname, './x-position.tpl.html')) // NB relative to dist
 	.node
 
-function instructions(frag: DocumentFragment, data: DataTypeXPosition) {
+function instructions(frag: DocumentFragment, data: JobPosition) {
 	let date_start = new Date(data.$start)
 	let date_end   = (data.$end) ? new Date(data.$end) : null
 	let descriptions = (typeof data.responsibilities === 'string') ? [data.responsibilities] : data.responsibilities || []  // FIXME use string[]
@@ -66,5 +54,5 @@ function instructions(frag: DocumentFragment, data: DataTypeXPosition) {
  * Washington, DC 20006
  * ```
  */
-const xPosition: Processor<DataTypeXPosition, object> = new Processor(template, instructions)
+const xPosition: Processor<JobPosition, object> = new Processor(template, instructions)
 export default xPosition

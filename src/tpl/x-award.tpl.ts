@@ -3,21 +3,14 @@ import * as path from 'path'
 import * as xjs from 'extrajs-dom'
 import {Processor} from 'template-processor'
 
+import {Award} from '../interfaces'
 
-interface DataTypeXAward {
-	/** date(s) relevant to the award */
-	dates: string;
-	/** custom HTML string defining this award */
-	text: string;
-	/** any sub-awards associated with this award */
-	sub_awards?: DataTypeXAward[]
-}
 
 const template = xjs.HTMLTemplateElement
 	.fromFileSync(path.join(__dirname, './x-award.tpl.html')) // NB relative to dist
 	.node
 
-function instructions(frag: DocumentFragment, data: DataTypeXAward) {
+function instructions(frag: DocumentFragment, data: Award) {
 	/**
 	 * Generate content from strings.
 	 * @private
@@ -43,5 +36,5 @@ function instructions(frag: DocumentFragment, data: DataTypeXAward) {
  * Washington, DC 20006
  * ```
  */
-const xAward: Processor<DataTypeXAward, object> = new Processor(template, instructions)
+const xAward: Processor<Award, object> = new Processor(template, instructions)
 export default xAward

@@ -1,20 +1,16 @@
 import * as path from 'path'
 
 import * as xjs from 'extrajs-dom'
-import * as sdo from 'schemaorg-jsd/dist/schemaorg' // TODO use an index file
 import {Processor} from 'template-processor'
 
+import {Skill} from '../interfaces'
 
-interface DataTypeXSkill extends sdo.Rating {
-	name: string;
-	ratingValue: number;
-}
 
 const template = xjs.HTMLTemplateElement
 	.fromFileSync(path.join(__dirname, './x-skill.tpl.html')) // NB relative to dist
 	.node
 
-function instructions(frag: DocumentFragment, data: DataTypeXSkill) {
+function instructions(frag: DocumentFragment, data: Skill) {
 	frag.querySelector('dt') !.innerHTML = data.name
 	frag.querySelector('slot[name="percentage"]') !.textContent = `${100 * data.ratingValue}`
 	new xjs.HTMLElement(frag.querySelector('[itemprop="ratingValue"]') as HTMLMeterElement)
@@ -35,5 +31,5 @@ function instructions(frag: DocumentFragment, data: DataTypeXSkill) {
  * Washington, DC 20006
  * ```
  */
-const xSkill: Processor<DataTypeXSkill, object> = new Processor(template, instructions)
+const xSkill: Processor<Skill, object> = new Processor(template, instructions)
 export default xSkill

@@ -1,28 +1,18 @@
 import * as path from 'path'
 
-import * as xjs from 'extrajs-dom'
 import {Date as xjs_Date} from 'extrajs'
-import * as sdo from 'schemaorg-jsd/dist/schemaorg' // TODO use an index file
+import * as xjs from 'extrajs-dom'
 import {Processor} from 'template-processor'
 
-import xCity, {DataTypeXCity} from './x-city.tpl'
+import {Prodev} from '../interfaces'
+import xCity from './x-city.tpl'
 
-
-interface DataTypeXProdev extends sdo.Event {
-	'@type': string;
-	name: string;
-	startDate: string;
-	endDate: string;
-	location: DataTypeXCity;
-	/** the number of professional development hours */
-	$pdh: number;
-}
 
 const template = xjs.HTMLTemplateElement
 	.fromFileSync(path.join(__dirname, './x-prodev.tpl.html')) // NB relative to dist
 	.node
 
-function instructions(frag: DocumentFragment, data: DataTypeXProdev) {
+function instructions(frag: DocumentFragment, data: Prodev) {
 	let date_start = new Date(data.startDate)
 	let date_end   = new Date(data.endDate  )
 	let pdh = data.$pdh
@@ -65,5 +55,5 @@ function instructions(frag: DocumentFragment, data: DataTypeXProdev) {
  * Washington, DC 20006
  * ```
  */
-const xProdev: Processor<DataTypeXProdev, object> = new Processor(template, instructions)
+const xProdev: Processor<Prodev, object> = new Processor(template, instructions)
 export default xProdev

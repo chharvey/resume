@@ -2,8 +2,9 @@ import * as path from 'path'
 
 import {xAddress} from 'aria-patterns'
 import * as xjs from 'extrajs-dom'
-import * as sdo from 'schemaorg-jsd/dist/schemaorg' // TODO use an index file
 import {Processor} from 'template-processor'
+
+import {ResumeCity} from '../interfaces'
 
 type StateType = { code: string, name: string }
 const STATE_DATA: StateType[] = require('extrajs-geo')
@@ -12,16 +13,6 @@ STATE_DATA.push(...[
 ])
 
 
-export interface DataTypeXCity extends sdo.City {
-	address: sdo.PostalAddress & {
-		addressLocality: string;
-		addressRegion  : string;
-	};
-	geo: sdo.GeoCoordinates & {
-		latitude: number;
-		longitude: number;
-	};
-}
 interface OptsTypeXCity { // TODO make this an options param
 	/** the value of the `[itemprop]` attribute to write */
 	$itemprop?: string;
@@ -33,7 +24,7 @@ const template = xjs.HTMLTemplateElement
 	.fromFileSync(path.join(__dirname, './x-city.tpl.html')) // NB relative to dist
 	.node
 
-function instructions(frag: DocumentFragment, data: DataTypeXCity & OptsTypeXCity) {
+function instructions(frag: DocumentFragment, data: ResumeCity & OptsTypeXCity) {
 	new xjs.Element(frag.querySelector('[itemtype="http://schema.org/City"]') !)
 		.attr('itemprop', data.$itemprop || null)
 	new xjs.Element(frag.querySelector('slot[name="address"]') !).empty()
@@ -51,5 +42,5 @@ function instructions(frag: DocumentFragment, data: DataTypeXCity & OptsTypeXCit
  * Washington, DC 20006
  * ```
  */
-const xCity: Processor<DataTypeXCity & OptsTypeXCity, object> = new Processor(template, instructions)
+const xCity: Processor<ResumeCity & OptsTypeXCity, object> = new Processor(template, instructions)
 export default xCity

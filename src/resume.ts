@@ -4,7 +4,6 @@ import * as xjs from 'extrajs-dom'
 
 import * as Ajv from 'ajv'
 import {xPersonFullname} from 'aria-patterns'
-import * as sdo from 'schemaorg-jsd/dist/schemaorg' // TODO use an index file
 import {Processor} from 'template-processor'
 
 const { SCHEMATA } = require('schemaorg-jsd')
@@ -12,23 +11,13 @@ const requireOther = require('schemaorg-jsd/lib/requireOther.js')
 
 const RESUME_SCHEMA = requireOther(path.join(__dirname, '../resume.jsd'))
 
+import {ResumePerson} from './interfaces'
 import xAward    from './tpl/x-award.tpl'
 import xDegree   from './tpl/x-degree.tpl'
 import xPosition from './tpl/x-position.tpl'
 import xProdev   from './tpl/x-prodev.tpl'
 import xSkill    from './tpl/x-skill.tpl'
 
-
-interface ResumePerson extends sdo.Person {
-	description?: string;
-	$awards?: any[];
-	$contactTitles?: any;
-	$degrees?: any[];
-	$positions?: any[];
-	$prodevs?: any[];
-	$skills?: any[];
-	$teams?: any[];
-}
 
 const doc: Document = xjs.Document.fromFileSync(path.join(__dirname, './resume.doc.html')).importLinks(__dirname).node
 
