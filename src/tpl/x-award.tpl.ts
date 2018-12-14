@@ -5,19 +5,20 @@ import * as xjs from 'extrajs-dom'
 import {Processor} from 'template-processor'
 
 
+interface DataTypeXAward {
+	/** date(s) relevant to the award */
+	dates: string;
+	/** custom HTML string defining this award */
+	text: string;
+	/** any sub-awards associated with this award */
+	sub_awards?: DataTypeXAward[]
+}
+
 const template = xjs.HTMLTemplateElement
 	.fromFileSync(path.join(__dirname, './x-award.tpl.html')) // NB relative to dist
 	.node
 
-/**
- * @summary xAward renderer.
- * @param {DocumentFragment} frag the template conent with which to render
- * @param {{dates:string, text:string}} data the data to fill the template
- * @param {string} data.dates date(s) relevant to the award
- * @param {string} data.text  custom HTML string defining this award
- * @param {Array<{dates:string, text:string}>=} sub_awards any sub-awards associated with this award
- */
-function instructions(frag, data) {
+function instructions(frag: DocumentFragment, data: DataTypeXAward) {
 	/**
 	 * @summary Generate content from strings.
 	 * @private
@@ -43,5 +44,5 @@ function instructions(frag, data) {
  * Washington, DC 20006
  * ```
  */
-const xAward: Processor<sdo.PostalAddress, XAddressOptsType> = new Processor(template, instructions)
+const xAward: Processor<DataTypeXAward, object> = new Processor(template, instructions)
 export default xAward

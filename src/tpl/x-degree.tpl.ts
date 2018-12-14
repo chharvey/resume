@@ -4,19 +4,20 @@ import * as xjs from 'extrajs-dom'
 import {Processor} from 'template-processor'
 
 
+interface DataTypeXDegree {
+	/** year the degree was earned */
+	year: number;
+	/** grade-point-average */
+	gpa: number;
+	/** type and field of the degree */
+	field: string;
+}
+
 const template = xjs.HTMLTemplateElement
 	.fromFileSync(path.join(__dirname, './x-degree.tpl.html')) // NB relative to dist
 	.node
 
-/**
- * @summary xDegree renderer.
- * @param {DocumentFragment} frag the template conent with which to render
- * @param {!Object} data the data to fill the template
- * @param {number}  data.year year the degree was earned
- * @param {number}  data.gpa grade-point-average
- * @param {string}  data.field type and field of the degree
- */
-function instructions(frag, data) {
+function instructions(frag: DocumentFragment, data: DataTypeXDegree) {
 	frag.querySelector('[itemprop="name"]'       ).innerHTML   = data.field
 	frag.querySelector('[itemprop="ratingValue"]').textContent = data.gpa
 	if (data.year > 0) {
@@ -34,5 +35,5 @@ function instructions(frag, data) {
  * Washington, DC 20006
  * ```
  */
-const xDegree: Processor<sdo.PostalAddress, XAddressOptsType> = new Processor(template, instructions)
+const xDegree: Processor<DataTypeXDegree, object> = new Processor(template, instructions)
 export default xDegree

@@ -2,22 +2,22 @@ import * as path from 'path'
 
 import * as xjs from 'extrajs-dom'
 import {Date as xjs_Date} from 'extrajs'
+import * as sdo from 'schemaorg-jsd/dist/schemaorg' // TODO use an index file
 import {Processor} from 'template-processor'
 
 import xCity from './x-city.tpl'
 
 
+interface DataTypeXProdev extends sdo.Event {
+	/** the number of professional development hours */
+	$pdh: number;
+}
+
 const template = xjs.HTMLTemplateElement
 	.fromFileSync(path.join(__dirname, './x-prodev.tpl.html')) // NB relative to dist
 	.node
 
-/**
- * @summary xProdev renderer.
- * @param   {DocumentFragment} frag the template conent with which to render
- * @param   {sdo.Event} data the data to fill the template
- * @param   {number} data.$pdh the number of professional development hours
- */
-function instructions(frag, data) {
+function instructions(frag: DocumentFragment, data: DataTypeXProdev) {
 	let date_start = new Date(data.startDate)
 	let date_end   = new Date(data.endDate  )
 	let pdh = data.$pdh || 0
@@ -25,7 +25,7 @@ function instructions(frag, data) {
 	frag.querySelector('.o-ListAchv__Award').setAttribute('itemtype', `http://schema.org/${data['@type']}`)
 	frag.querySelector('[itemprop="name"]').innerHTML = data.name
 	new xjs.HTMLElement(frag.querySelector('slot[name="city"]')).empty()
-		.append(xCity.process(data.location || { "@type": "Place" }))
+	  .append(xCity.process(data.location || { "@type": "Place" }))
 	frag.querySelector('.o-ListAchv__Award > time').dateTime    = `PT${pdh}H`
 	frag.querySelector('.o-ListAchv__Award > time').textContent = `${pdh} hr`
 
@@ -59,5 +59,5 @@ function instructions(frag, data) {
  * Washington, DC 20006
  * ```
  */
-const xProdev: Processor<sdo.PostalAddress, XAddressOptsType> = new Processor(template, instructions)
+const xProdev: Processor<DataTypeXProdev, object> = new Processor(template, instructions)
 export default xProdev

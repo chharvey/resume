@@ -2,21 +2,22 @@ import * as path from 'path'
 
 import * as xjs from 'extrajs-dom'
 import {Date as xjs_Date} from 'extrajs'
+import * as sdo from 'schemaorg-jsd/dist/schemaorg' // TODO use an index file
 import {Processor} from 'template-processor'
 
 import xCity from './x-city.tpl'
 
 
+interface DataTypeXPosition extends sdo.JobPosting {
+	$start: string;
+	$end?: string;
+}
+
 const template = xjs.HTMLTemplateElement
 	.fromFileSync(path.join(__dirname, './x-position.tpl.html')) // NB relative to dist
 	.node
 
-/**
- * @summary xPosition renderer.
- * @param   {DocumentFragment} frag the template conent with which to render
- * @param   {sdo.JobPosting} data the data to fill the template
- */
-function instructions(frag, data) {
+function instructions(frag: DocumentFragment, data: DataTypeXPosition) {
 	let date_start = new Date(data.$start)
 	let date_end   = (data.$end) ? new Date(data.$end) : null
 	let descriptions = (typeof data.responsibilities === 'string') ? [data.responsibilities] : data.responsibilities || []
@@ -58,5 +59,5 @@ function instructions(frag, data) {
  * Washington, DC 20006
  * ```
  */
-const xPosition: Processor<sdo.PostalAddress, XAddressOptsType> = new Processor(template, instructions)
+const xPosition: Processor<DataTypeXPosition, object> = new Processor(template, instructions)
 export default xPosition

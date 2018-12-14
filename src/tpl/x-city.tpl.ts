@@ -2,6 +2,7 @@ import * as path from 'path'
 
 import {xAddress} from 'aria-patterns'
 import * as xjs from 'extrajs-dom'
+import * as sdo from 'schemaorg-jsd/dist/schemaorg' // TODO use an index file
 import {Processor} from 'template-processor'
 
 type StateType = { code: string, name: string }
@@ -11,18 +12,18 @@ STATE_DATA.push(...[
 ])
 
 
+interface OptsTypeXCity { // TODO make this an options param
+	/** the value of the `[itemprop]` attribute to write */
+	itemprop?: string;
+	/** should I display the full (non-abbreviated) region name? */
+	full?: boolean;
+}
+
 const template = xjs.HTMLTemplateElement
 	.fromFileSync(path.join(__dirname, './x-city.tpl.html')) // NB relative to dist
 	.node
 
-/**
- * @summary xCity renderer.
- * @param   {DocumentFragment} frag the template conent with which to render
- * @param   {sdo.City} data the data to fill the template
- * @param   {string=} data.$itemprop the value of the `[itemprop]` attribute to write, if any
- * @param   {boolean=} data.$full `true` to display the full (non-abbreviated) region name
- */
-function instructions(frag, data) {
+function instructions(frag: DocumentFragment, data: sdo.City & OptsTypeXCity) {
 	new xjs.HTMLElement(frag.querySelector('[itemtype="http://schema.org/City"]'))
 		.attr('itemprop', data.$itemprop || null)
 	new xjs.HTMLElement(frag.querySelector('slot[name="address"]')).empty()
@@ -40,5 +41,5 @@ function instructions(frag, data) {
  * Washington, DC 20006
  * ```
  */
-const xCity: Processor<sdo.PostalAddress, XAddressOptsType> = new Processor(template, instructions)
+const xCity: Processor<sdo.City & OptsTypeXCity, object> = new Processor(template, instructions)
 export default xCity
