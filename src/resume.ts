@@ -11,7 +11,7 @@ const requireOther = require('schemaorg-jsd/lib/requireOther.js')
 
 const RESUME_SCHEMA = requireOther(path.join(__dirname, '../resume.jsd'))
 
-import {ResumePerson, SkillGroup, JobPositionGroup, Skill, JobPosition} from './interfaces'
+import {ResumePerson, SkillGroup, JobPositionGroup, Skill, JobPosition, Prodev, Award} from './interfaces'
 import xAward    from './tpl/x-award.tpl'
 import xDegree   from './tpl/x-degree.tpl'
 import xPosition from './tpl/x-position.tpl'
@@ -107,39 +107,41 @@ async function instructions(document: Document, data: ResumePerson): Promise<voi
 
 	;(() => {
 		let templateEl: HTMLTemplateElement = document.querySelector('template#achievements') as HTMLTemplateElement
-		const xAchivementGroup: Processor<unknown, object> = new Processor(templateEl, function (f, d) {
-			f.querySelector('.o-Grid__Item--exp') !.id = d.id
-			f.querySelector('.c-ExpHn') !.textContent = d.title
-			new xjs.HTMLDListElement(f.querySelector('.o-ListAchv') as HTMLDListElement).empty()
-				.replaceClassString('{{ classes }}', d.classes || '')
-				.append(
-					...d.list.map((item) => d.xComponent.process(item))
-				)
-		})
+		function achievementGroupProcessorGenerator<T>(processor: Processor<T, object>): Processor<{
+			name           : string;
+			identifier     : string;
+			itemListElement: T[];
+		}, {
+			classes?: string;
+		}> {
+			return new Processor(templateEl, function (frag, datagroup, optsgroup) {
+				frag.querySelector('.o-Grid__Item--exp') !.id = datagroup.identifier
+				frag.querySelector('.c-ExpHn') !.textContent = datagroup.name
+				new xjs.HTMLDListElement(frag.querySelector('.o-ListAchv') as HTMLDListElement).empty()
+					.replaceClassString('{{ classes }}', optsgroup.classes || '')
+					.append(...datagroup.itemListElement.map((item) => processor.process(item)))
+			})
+		}
 		templateEl.after(
-			new xjs.DocumentFragment(document.createDocumentFragment())
-				.append(...[
-					{
-						title  : 'Profes­sional Dev­elopment', // NOTE invisible soft hyphens here! // `Profes&shy;sional Dev&shy;elopment`
-						id     : 'prof-dev',
-						list   : data.$prodevs || [],
-						xComponent: xProdev,
-					},
-					{
-						title  : 'Awards & Member­ships', // NOTE `Awards &amp; Member&shy;ships`
-						id     : 'awards',
-						list   : data.$awards || [],
-						xComponent: xAward,
-					},
-					{
-						title  : 'Team Athletic Experience',
-						id     : 'athletic',
-						classes: 'h-Hr',
-						list   : data.$teams  || [],
-						xComponent: xAward,
-					}
-				].map((group) => xAchivementGroup.process(group)))
-				.node
+			...[
+				achievementGroupProcessorGenerator<Prodev>(xProdev).process({
+					name           : 'Profes­sional Dev­elopment', // NOTE invisible soft hyphens here! // `Profes&shy;sional Dev&shy;elopment`
+					identifier     : 'prof-dev',
+					itemListElement: data.$prodevs || [],
+				}),
+				achievementGroupProcessorGenerator<Award>(xAward).process({
+					name           : 'Awards & Member­ships', // NOTE `Awards &amp; Member&shy;ships`
+					identifier     : 'awards',
+					itemListElement: data.$awards || [],
+				}),
+				achievementGroupProcessorGenerator<Award>(xAward).process({
+					name           : 'Team Athletic Experience',
+					identifier     : 'athletic',
+					itemListElement: data.$teams  || [],
+				}, {
+					classes: 'h-Hr',
+				}),
+			]
 		)
 	})()
 }
