@@ -38,7 +38,8 @@ function instructions(frag: DocumentFragment, data: JobPosition) {
 	}
 
 	new xjs.Element(frag.querySelector('.c-Position__Place > slot[name="city"]') !).empty()
-		.append(new xjs.Node(xCity.process({ ...data.jobLocation, $itemprop: 'jobLocation' })).trimInner())
+		.append(xCity.process(data.jobLocation, { itemprop: 'jobLocation' }))
+		.trimInner()
 
 	new xjs.HTMLUListElement(frag.querySelector('.c-Position__Body') as HTMLUListElement).populate(function (f, d) {
 		f.querySelector('li') !.innerHTML = d
