@@ -11,7 +11,7 @@ const requireOther = require('schemaorg-jsd/lib/requireOther.js')
 
 const RESUME_SCHEMA = requireOther(path.join(__dirname, '../resume.jsd'))
 
-import {ResumePerson} from './interfaces'
+import {ResumePerson, SkillGroup, Skill} from './interfaces'
 import xAward    from './tpl/x-award.tpl'
 import xDegree   from './tpl/x-degree.tpl'
 import xPosition from './tpl/x-position.tpl'
@@ -77,15 +77,18 @@ async function instructions(document: Document, data: ResumePerson): Promise<voi
 		...(data.$degrees || []).map((item) => xDegree.process(item))
 	)
 
-	new xjs.HTMLUListElement(document.querySelector('.o-Grid--skillGroups') as HTMLUListElement).populate(function (f, d) {
+	// BUG: upgrade to `extrajs-dom^5.1`, then remove manual type inference
+	new xjs.HTMLUListElement(document.querySelector('.o-Grid--skillGroups') as HTMLUListElement).populate(function (f, d: SkillGroup) {
 		f.querySelector('.o-List__Item'    ) !.id          = `${d.identifier}-item` // TODO fix this after fixing hidden-ness
 		f.querySelector('.c-Position'      ) !.id          = d.identifier
 		f.querySelector('.c-Position__Name') !.textContent = d.name
 		new xjs.Element(f.querySelector('.o-Grid--skill') !).empty().append(
-			...d.itemListElement.map((item: Skill) => xSkill.process(item)) // BUG: upgrade to `extrajs-dom^5.1`, then remove manual type inference
+			...d.itemListElement.map((item: Skill) => xSkill.process(item))
 		)
 	}, data.$skills || [])
-	new xjs.HTMLUListElement(document.querySelector('#skills .o-List--print') as HTMLUListElement).populate(function (f, d) {
+
+	// BUG: upgrade to `extrajs-dom^5.1`, then remove manual type inference
+	new xjs.HTMLUListElement(document.querySelector('#skills .o-List--print') as HTMLUListElement).populate(function (f, d: Element) {
 		f.querySelector('li') !.innerHTML = d.innerHTML
 	}, [...document.querySelector('.o-Grid--skillGroups') !.querySelectorAll('dt.o-Grid__Item')])
 
