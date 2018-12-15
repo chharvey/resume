@@ -25,6 +25,17 @@
   },
   "homepage": "https://github.com/chharvey/resume#readme",
   "devDependencies": {
-    "gulp": "^4.0.0"
+    "gulp": "^4.0.0",
+    "gulp-typescript": "^5.0.0",
+    "typescript": "^3.2.2"
+  },
+  "dependencies": {
+    "ajv": "^6.6.1",
+    "aria-patterns": "^2.0.0-alpha.0",
+    "extrajs": "^0.16.0",
+    "extrajs-dom": "^5.0.0-beta.0",
+    "extrajs-geo": "^0.1.0",
+    "schemaorg-jsd": "^0.13.1",
+    "template-processor": "^1.1.0-beta.0"
   }
 }

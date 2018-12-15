@@ -1,6 +1,14 @@
 const gulp = require('gulp')
+const typescript = require('gulp-typescript')
+// require('typescript') // DO NOT REMOVE … peerDependency of `gulp-typescript`
+
+const tsconfig = require('./tsconfig.json')
+
 
 function dist() {
+	return gulp.src(['./src/**/*.ts'])
+		.pipe(typescript(tsconfig.compilerOptions))
+		.pipe(gulp.dest('./dist/'))
 }
 
 function test_out() {
