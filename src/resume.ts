@@ -32,31 +32,45 @@ async function instructions(document: Document, data: ResumePerson): Promise<voi
 		})
 	)
 
-	new xjs.HTMLUListElement(document.querySelector('main header address ul.c-Contact') as HTMLUListElement).populate(function (f, d) {
-		new xjs.HTMLAnchorElement(f.querySelector('.c-Contact__Link') as HTMLAnchorElement).href(d.href || null)
-		new xjs.Element(f.querySelector('.c-Contact__Icon') !).replaceClassString('{{ octicon }}', d.icon)
-		f.querySelector('.c-Contact__Link') !.setAttribute('itemprop', d.name)
-		f.querySelector('.c-Contact__Text') !.textContent = d.text
-	}, [
-		{
-			name: 'telephone',
-			href: (data.telephone) ? `tel:${data.telephone}` : '',
-			icon: 'device-mobile',
-			text: data.$contactTitles.telephone || data.telephone,
-		},
-		{
-			name: 'email',
-			href: (data.email) ? `mailto:${data.email}` : '',
-			icon: 'mail',
-			text: data.$contactTitles.email || data.email,
-		},
-		{
-			name: 'url',
-			href: data.url || '',
-			icon: 'home',
-			text: data.$contactTitles.url || data.url,
-		},
-	])
+	;(() => {
+		let dataset: {
+			itemprop : string;
+			icon     : string;
+			href     : string|null;
+			text     : string|null;
+		}[] = [
+			{
+				itemprop: 'telephone',
+				icon: 'device-mobile',
+				href: (data.telephone) ? `tel:${data.telephone}` : null,
+				text: data.$contactText && data.$contactText.telephone || data.telephone || null,
+			},
+			{
+				itemprop: 'email',
+				icon: 'mail',
+				href: (data.email) ? `mailto:${data.email}` : null,
+				text: data.$contactText && data.$contactText.email || data.email || null,
+			},
+			{
+				itemprop: 'url',
+				icon: 'home',
+				href: data.url || null,
+				text: data.$contactText && data.$contactText.url || data.url || null,
+			},
+		]
+		// BUG: upgrade to `extrajs-dom^5.1`, then remove manual type inference
+		new xjs.HTMLUListElement(document.querySelector('main header address ul.c-Contact') as HTMLUListElement).populate(function (f, d: {
+			itemprop : string;
+			icon     : string;
+			href     : string|null;
+			text     : string|null;
+		}) {
+			new xjs.HTMLAnchorElement(f.querySelector('.c-Contact__Link') as HTMLAnchorElement).href(d.href)
+			new xjs.Element(f.querySelector('.c-Contact__Icon') !).replaceClassString('{{ octicon }}', d.icon)
+			f.querySelector('.c-Contact__Link') !.setAttribute('itemprop', d.itemprop)
+			f.querySelector('.c-Contact__Text') !.textContent = d.text
+		}, dataset)
+	})()
 
 	document.querySelector('#about slot[name="about"]') !.textContent = data.description || ''
 	new xjs.Element(document.querySelector('#edu .o-ListAchv') !).empty().append(

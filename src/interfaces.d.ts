@@ -6,13 +6,13 @@ export interface ResumePerson extends sdo.Person {
 	 * @default ''
 	 */
 	description?: string;
-	/** optional alternative titles to display */
-	$contactTitles?: {
-		/** optional alternative title of the url */
+	/** optional alternative texts to display */
+	$contactText?: {
+		/** optional alternative text of the url */
 		url?: string;
-		/** optional alternative title of the email */
+		/** optional alternative text of the email */
 		email?: string;
-		/** optional alternative title of the telephone */
+		/** optional alternative text of the telephone */
 		telephone?: string;
 	};
 	/** List of skills, grouped by category. */
