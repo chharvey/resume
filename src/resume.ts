@@ -11,7 +11,7 @@ const requireOther = require('schemaorg-jsd/lib/requireOther.js')
 
 const RESUME_SCHEMA = requireOther(path.join(__dirname, '../resume.jsd'))
 
-import {ResumePerson, SkillGroup, Skill} from './interfaces'
+import {ResumePerson, SkillGroup, JobPositionGroup, Skill, JobPosition} from './interfaces'
 import xAward    from './tpl/x-award.tpl'
 import xDegree   from './tpl/x-degree.tpl'
 import xPosition from './tpl/x-position.tpl'
@@ -94,12 +94,13 @@ async function instructions(document: Document, data: ResumePerson): Promise<voi
 
 	;(() => {
 		let templateEl: HTMLTemplateElement = document.querySelector('template#experience') as HTMLTemplateElement
-		const xPositionGroup: Processor<unknown, object> = new Processor(templateEl, function (f, d) {
-			f.querySelector('.o-Grid__Item--exp') !.id = d.identifier
-			f.querySelector('.c-ExpHn') !.textContent = d.name
-			new xjs.HTMLUListElement(f.querySelector('ul.o-List') as HTMLUListElement).populate(function (f, d) {
+		const xPositionGroup: Processor<JobPositionGroup, object> = new Processor(templateEl, function (frag, datagroup) {
+			frag.querySelector('.o-Grid__Item--exp') !.id = datagroup.identifier
+			frag.querySelector('.c-ExpHn') !.textContent = datagroup.name
+			// BUG: upgrade to `extrajs-dom^5.1`, then remove manual type inference
+			new xjs.HTMLUListElement(frag.querySelector('ul.o-List') as HTMLUListElement).populate(function (f, d: JobPosition) {
 				new xjs.HTMLLIElement(f.querySelector('li') !).empty().append(xPosition.process(d))
-			}, d.itemListElement)
+			}, datagroup.itemListElement)
 		})
 		templateEl.after(...(data.$positions || []).map((group) => xPositionGroup.process(group)))
 	})()
