@@ -7,7 +7,7 @@ import {Degree} from '../interfaces'
 
 
 const template = xjs.HTMLTemplateElement
-	.fromFileSync(path.join(__dirname, './x-degree.tpl.html')) // NB relative to dist
+	.fromFileSync(path.join(__dirname, '../../src/tpl/x-degree.tpl.html')) // NB relative to dist
 	.node
 
 function instructions(frag: DocumentFragment, data: Degree) {

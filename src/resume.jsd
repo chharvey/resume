@@ -1,6 +1,6 @@
 {
 	"$schema": "http://json-schema.org/draft-07/schema#",
-	"$id": "https://chharvey.github.io/resume/resume.jsd",
+	"$id": "https://chharvey.github.io/resume/src/resume.jsd",
 	"title": "Resume",
 	"description": "Resume of Christopher H. Harvey of Fairfax, VA.",
 	"definitions": {
@@ -92,7 +92,7 @@
 				"sub_awards": {
 					"type": "array",
 					"description": "any sub-awards within this award",
-					"items": { "$ref": "#x-Award" }
+					"items": { "$ref": "#/definitions/Award" }
 				}
 			}
 		}

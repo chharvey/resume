@@ -6,10 +6,14 @@ import * as Ajv from 'ajv'
 import {xPersonFullname} from 'aria-patterns'
 import {Processor} from 'template-processor'
 
-const { SCHEMATA } = require('schemaorg-jsd')
-const requireOther = require('schemaorg-jsd/lib/requireOther.js')
+const sdo_jsd = require('schemaorg-jsd')
+const [META_SCHEMATA, SCHEMATA]: Promise<object[]>[] = [
+	sdo_jsd.getMetaSchemata(),
+	sdo_jsd.getSchemata(),
+]
+const {requireOther} = require('schemaorg-jsd/lib/requireOther.js')
 
-const RESUME_SCHEMA = requireOther(path.join(__dirname, '../resume.jsd'))
+const RESUME_SCHEMA = requireOther(path.join(__dirname, '../src/resume.jsd')) // NB relative to dist
 
 import {ResumePerson, SkillGroup, JobPositionGroup, Skill, JobPosition, Prodev, Award} from './interfaces'
 import xAward    from './tpl/x-award.tpl'
@@ -19,7 +23,7 @@ import xProdev   from './tpl/x-prodev.tpl'
 import xSkill    from './tpl/x-skill.tpl'
 
 
-const doc: Document = xjs.Document.fromFileSync(path.join(__dirname, './resume.doc.html')).importLinks(__dirname).node
+const doc: Document = xjs.Document.fromFileSync(path.join(__dirname, '../src/doc/resume.doc.html')).importLinks(__dirname).node // NB relative to dist
 
 async function instructions(document: Document, data: ResumePerson): Promise<void> {
 	new xjs.Element(document.querySelector('main header [itemprop="name"]') !).empty().append(
@@ -146,9 +150,9 @@ async function instructions(document: Document, data: ResumePerson): Promise<voi
 	})()
 }
 
-export default async function (data: any): Promise<Document> {
+export default async function (data: ResumePerson): Promise<Document> {
 	let ajv: Ajv.Ajv = new Ajv()
-	ajv.addSchema(SCHEMATA)
+	ajv.addMetaSchema(await META_SCHEMATA).addSchema(await SCHEMATA)
 	let is_data_valid: boolean = ajv.validate(RESUME_SCHEMA, data) as boolean
 	if (!is_data_valid) {
 		let e: TypeError & { filename?: string; details?: Ajv.ErrorObject } = new TypeError(ajv.errors ![0].message)

@@ -7,7 +7,7 @@ import {Skill} from '../interfaces'
 
 
 const template = xjs.HTMLTemplateElement
-	.fromFileSync(path.join(__dirname, './x-skill.tpl.html')) // NB relative to dist
+	.fromFileSync(path.join(__dirname, '../../src/tpl/x-skill.tpl.html')) // NB relative to dist
 	.node
 
 function instructions(frag: DocumentFragment, data: Skill) {

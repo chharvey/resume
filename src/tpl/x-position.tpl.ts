@@ -9,7 +9,7 @@ import xCity from './x-city.tpl'
 
 
 const template = xjs.HTMLTemplateElement
-	.fromFileSync(path.join(__dirname, './x-position.tpl.html')) // NB relative to dist
+	.fromFileSync(path.join(__dirname, '../../src/tpl/x-position.tpl.html')) // NB relative to dist
 	.node
 
 function instructions(frag: DocumentFragment, data: JobPosition) {

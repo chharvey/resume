@@ -25,7 +25,7 @@ interface OptsTypeXCity { // TODO make this an options param
 }
 
 const template = xjs.HTMLTemplateElement
-	.fromFileSync(path.join(__dirname, './x-city.tpl.html')) // NB relative to dist
+	.fromFileSync(path.join(__dirname, '../../src/tpl/x-city.tpl.html')) // NB relative to dist
 	.node
 
 function instructions(frag: DocumentFragment, data: ResumeCity, opts: OptsTypeXCity) {

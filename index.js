@@ -1,1 +1,1 @@
-module.exports = require('./dist/resume.js')
+module.exports = require('./dist/resume.js').default
