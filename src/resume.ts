@@ -60,9 +60,7 @@ async function instructions(document: Document, data: ResumePerson): Promise<voi
 
 	document.querySelector('#about slot[name="about"]') !.textContent = data.description || ''
 	new xjs.Element(document.querySelector('#edu .o-ListAchv') !).empty().append(
-		new xjs.DocumentFragment(document.createDocumentFragment()).append(
-			...(data.$degrees || []).map((item) => xDegree.process(item))
-		)
+		...(data.$degrees || []).map((item) => xDegree.process(item))
 	)
 
 	new xjs.HTMLUListElement(document.querySelector('.o-Grid--skillGroups') as HTMLUListElement).populate(function (f, d) {
@@ -70,7 +68,7 @@ async function instructions(document: Document, data: ResumePerson): Promise<voi
 		f.querySelector('.c-Position'      ) !.id          = d.identifier
 		f.querySelector('.c-Position__Name') !.textContent = d.name
 		new xjs.Element(f.querySelector('.o-Grid--skill') !).empty().append(
-			...d.itemListElement.map((item) => xSkill.process(item))
+			...d.itemListElement.map((item: Skill) => xSkill.process(item)) // BUG: upgrade to `extrajs-dom^5.1`, then remove manual type inference
 		)
 	}, data.$skills || [])
 	new xjs.HTMLUListElement(document.querySelector('#skills .o-List--print') as HTMLUListElement).populate(function (f, d) {
@@ -86,11 +84,7 @@ async function instructions(document: Document, data: ResumePerson): Promise<voi
 				new xjs.HTMLLIElement(f.querySelector('li') !).empty().append(xPosition.process(d))
 			}, d.itemListElement)
 		})
-		templateEl.after(
-			new xjs.DocumentFragment(document.createDocumentFragment())
-				.append(...(data.$positions || []).map((group) => xPositionGroup.process(group)))
-				.node
-		)
+		templateEl.after(...(data.$positions || []).map((group) => xPositionGroup.process(group)))
 	})()
 
 	;(() => {

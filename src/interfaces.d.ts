@@ -2,6 +2,10 @@ import * as sdo from 'schemaorg-jsd/dist/schemaorg' // TODO use an index file
 
 
 export interface ResumePerson extends sdo.Person {
+	/**
+	 * @default ''
+	 */
+	description?: string;
 	/** optional alternative titles to display */
 	$contactTitles?: {
 		/** optional alternative title of the url */

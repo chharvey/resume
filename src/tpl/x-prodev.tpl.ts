@@ -40,7 +40,7 @@ function instructions(frag: DocumentFragment, data: Prodev) {
 			.dateTime(date_start)
 			.textContent([
 				date_start.getUTCDate(),
-				(!same_UTC_month || !same_UTC_year) ? ` ${xjs.Date.format(date_start, 'M')}` : '',
+				(!same_UTC_month || !same_UTC_year) ? ` ${xjs_Date.format(date_start, 'M')}` : '',
 				(!same_UTC_year) ? ` ${date_start.getFullYear()}` : '',
 			].join(''))
 		frag.querySelectorAll('.o-ListAchv__Date')[0].remove()
