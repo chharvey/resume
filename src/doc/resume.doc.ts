@@ -13,17 +13,17 @@ const [META_SCHEMATA, SCHEMATA]: Promise<object[]>[] = [
 ]
 const {requireOther} = require('schemaorg-jsd/lib/requireOther.js')
 
-const RESUME_SCHEMA = requireOther(path.join(__dirname, '../src/resume.jsd')) // NB relative to dist
+const RESUME_SCHEMA = requireOther(path.join(__dirname, '../../src/resume.jsd')) // NB relative to dist
 
-import {ResumePerson, SkillGroup, JobPositionGroup, Skill, JobPosition, Prodev, Award} from './interfaces'
-import xAward    from './tpl/x-award.tpl'
-import xDegree   from './tpl/x-degree.tpl'
-import xPosition from './tpl/x-position.tpl'
-import xProdev   from './tpl/x-prodev.tpl'
-import xSkill    from './tpl/x-skill.tpl'
+import {ResumePerson, SkillGroup, JobPositionGroup, Skill, JobPosition, Prodev, Award} from '../interfaces'
+import xAward    from '../tpl/x-award.tpl'
+import xDegree   from '../tpl/x-degree.tpl'
+import xPosition from '../tpl/x-position.tpl'
+import xProdev   from '../tpl/x-prodev.tpl'
+import xSkill    from '../tpl/x-skill.tpl'
 
 
-const doc: Document = xjs.Document.fromFileSync(path.join(__dirname, '../src/doc/resume.doc.html')).importLinks(__dirname).node // NB relative to dist
+const doc: Document = xjs.Document.fromFileSync(path.join(__dirname, '../../src/doc/resume.doc.html')).importLinks(__dirname).node // NB relative to dist
 
 async function instructions(document: Document, data: ResumePerson): Promise<void> {
 	new xjs.Element(document.querySelector('main header [itemprop="name"]') !).empty().append(
