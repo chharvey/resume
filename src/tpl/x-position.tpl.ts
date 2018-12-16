@@ -12,7 +12,7 @@ const template = xjs.HTMLTemplateElement
 	.fromFileSync(path.join(__dirname, '../../src/tpl/x-position.tpl.html')) // NB relative to dist
 	.node
 
-function instructions(frag: DocumentFragment, data: JobPosition) {
+function instructions(frag: DocumentFragment, data: JobPosition): void {
 	let date_start = new Date(data.$start)
 	let date_end   = (data.$end) ? new Date(data.$end) : null
 	let descriptions = (typeof data.responsibilities === 'string') ? [data.responsibilities] : data.responsibilities || []  // FIXME use string[]

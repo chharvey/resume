@@ -12,7 +12,7 @@ const template = xjs.HTMLTemplateElement
 	.fromFileSync(path.join(__dirname, '../../src/tpl/x-prodev.tpl.html')) // NB relative to dist
 	.node
 
-function instructions(frag: DocumentFragment, data: Prodev) {
+function instructions(frag: DocumentFragment, data: Prodev): void {
 	let date_start = new Date(data.startDate)
 	let date_end   = new Date(data.endDate  )
 	let pdh = data.$pdh

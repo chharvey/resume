@@ -10,7 +10,7 @@ const template = xjs.HTMLTemplateElement
 	.fromFileSync(path.join(__dirname, '../../src/tpl/x-skill.tpl.html')) // NB relative to dist
 	.node
 
-function instructions(frag: DocumentFragment, data: Skill) {
+function instructions(frag: DocumentFragment, data: Skill): void {
 	frag.querySelector('dt') !.innerHTML = data.name
 	frag.querySelector('slot[name="percentage"]') !.textContent = `${100 * data.ratingValue}`
 	new xjs.HTMLElement(frag.querySelector('[itemprop="ratingValue"]') as HTMLMeterElement)

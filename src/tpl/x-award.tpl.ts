@@ -10,7 +10,7 @@ const template = xjs.HTMLTemplateElement
 	.fromFileSync(path.join(__dirname, '../../src/tpl/x-award.tpl.html')) // NB relative to dist
 	.node
 
-function instructions(frag: DocumentFragment, data: Award) {
+function instructions(frag: DocumentFragment, data: Award): void {
 	/**
 	 * Generate content from strings.
 	 * @private

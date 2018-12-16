@@ -10,7 +10,7 @@ const template = xjs.HTMLTemplateElement
 	.fromFileSync(path.join(__dirname, '../../src/tpl/x-degree.tpl.html')) // NB relative to dist
 	.node
 
-function instructions(frag: DocumentFragment, data: Degree) {
+function instructions(frag: DocumentFragment, data: Degree): void {
 	frag.querySelector('[itemprop="name"]'       ) !.innerHTML   = data.field
 	frag.querySelector('[itemprop="ratingValue"]') !.textContent = `${data.gpa}`
 	if (data.year > 0) {
