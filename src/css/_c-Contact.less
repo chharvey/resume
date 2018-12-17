@@ -1,6 +1,5 @@
-
 /*################################*\
-    resume  |  _c-Contact.less
+		resume  |  _c-Contact.less
 \*################################*/
 
 
@@ -15,33 +14,33 @@
 // ^updated
 // : 2017-08-10
 .c-Contact {
-  margin-bottom: 0;
-  @media screen {
-  font-family: @g-fontfamily-base;
-  text-align: center;
-    grid-template-columns: repeat(3, auto);
-    grid-column-gap: 0.5rem; // CHANGED `column-gap` for grid layout not supported yet
-  }
-  @media not all and (min-width: 30em) {
-    .font-size-mod(@g-font-size-kilo);
-  }
+	margin-bottom: 0;
+	@media screen {
+	font-family: @g-fontfamily-base;
+	text-align: center;
+		grid-template-columns: repeat(3, auto);
+		grid-column-gap: 0.5rem; // CHANGED `column-gap` for grid layout not supported yet
+	}
+	@media not all and (min-width: 30em) {
+		.font-size-mod(@g-font-size-kilo);
+	}
 }
 
 .c-Contact__Item,
 .c-Contact__Link,
 .c-Contact__Link > div:not(.c-Contact__Icon) {
-  @media print {
-    display: inline;
-    line-height: 0;
-  }
+	@media print {
+		display: inline;
+		line-height: 0;
+	}
 }
 
 .c-Contact__Item {
-  @media print {
-    &:not(:last-child)::after {
-      content: '\00a0\25aa\00a0'; // 'black small square' ▪
-    }
-  }
+	@media print {
+		&:not(:last-child)::after {
+			content: '\00a0\25aa\00a0'; // 'black small square' ▪
+		}
+	}
 }
 
 .c-Contact__Link {
@@ -54,8 +53,8 @@
 //
 // ```html
 // ul.o-ListContact
-//   li.o-ListContact__Item
-//     span.o-ListContact__Item__Icon.octicon
+//	 li.o-ListContact__Item
+//		 span.o-ListContact__Item__Icon.octicon
 // ```
 //
 // Extends:
@@ -66,18 +65,18 @@
 // ^updated
 // : 2017-08-09
 .c-Contact__Icon {
-  @fontsizeratio: @g-font-size-kilo;
-  width:  calc(@fontsizeratio~' * var(--vru)');
-  height: calc(@fontsizeratio~' * var(--vru)');
-  .font-size-el(@fontsizeratio);
-  border: 1px solid currentColor;
-  border-radius: 50%;
-  opacity: 0.8;
-  &::before {
-    position: relative;
-    top: 0.25rem;
-  }
-  @media not all and (min-width: 30em), print {
-    display: none;
-  }
+	@fontsizeratio: @g-font-size-kilo;
+	width:  calc(@fontsizeratio * var(--vru));
+	height: calc(@fontsizeratio * var(--vru));
+	.font-size-el(@fontsizeratio);
+	border: 1px solid currentColor;
+	border-radius: 50%;
+	opacity: 0.8;
+	&::before {
+		position: relative;
+		top: 0.25rem;
+	}
+	@media not all and (min-width: 30em), print {
+		display: none;
+	}
 }

@@ -1,6 +1,5 @@
-
 /*################################*\
-    resume  |  _o-ListAchv.less
+		resume  |  _o-ListAchv.less
 \*################################*/
 
 
@@ -40,23 +39,23 @@
 
 .o-ListAchv__Award,
 .o-ListAchv__Date {
-  @media print {
-    display: block; line-height: inherit; // undo .h-Inline
-  }
+	@media print {
+		display: block; line-height: inherit; // undo .h-Inline
+	}
 }
 
 // An award in a list of achievements.
 .o-ListAchv__Award {
-  @media screen {
-    margin-right: 0.5rem;
-  }
+	@media screen {
+		margin-right: 0.5rem;
+	}
 }
 
 // A date for an award/achievement.
 .o-ListAchv__Date {
-  @media print {
-    &::after {
-      content: none; // undo .h-Clearfix
-    }
-  }
+	@media print {
+		&::after {
+			content: none; // undo .h-Clearfix
+		}
+	}
 }
