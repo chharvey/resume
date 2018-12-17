@@ -34,7 +34,7 @@ function dist_ts() {
 }
 
 function dist_css() {
-	return gulp.src('./src/css/resume.less')
+	return gulp.src(['./src/css/*.less', '!./src/css/__*.less'])
 		.pipe(sourcemaps.init())
 		.pipe(less())
 		.pipe(autoprefixer({
