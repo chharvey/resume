@@ -15,6 +15,8 @@ const {requireOther} = require('schemaorg-jsd/lib/requireOther.js')
 
 const RESUME_SCHEMA = requireOther(path.join(__dirname, '../../src/resume.jsd')) // NB relative to dist
 
+const VERSION: string = require('../../package.json').version
+
 import {ResumePerson, SkillGroup, JobPositionGroup, Skill, JobPosition, Prodev, Award} from '../interfaces'
 import xAward    from '../tpl/x-award.tpl'
 import xDegree   from '../tpl/x-degree.tpl'
@@ -26,6 +28,8 @@ import xSkill    from '../tpl/x-skill.tpl'
 const doc: Document = xjs.Document.fromFileSync(path.join(__dirname, '../../src/doc/resume.doc.html')).importLinks(__dirname).node // NB relative to dist
 
 async function instructions(document: Document, data: ResumePerson): Promise<void> {
+	;(document.querySelector('#stylesheet') as HTMLLinkElement).href = `https://cdn.jsdelivr.net/gh/chharvey/resume@${VERSION}/dist/css/resume.css`
+
 	new xjs.Element(document.querySelector('main header [itemprop="name"]') !).empty().append(
 		xPersonFullname.process({
 			familyName      : data.familyName      || '',
