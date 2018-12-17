@@ -2,7 +2,6 @@
 		resume  |  _c-ResHn.less
 \*################################*/
 @import (reference) url('../../node_modules/xmeter/css/src/__settings.less');
-@import (reference) url('../../node_modules/xmeter/css/src/__tool.fontsize.less');
 @import (reference) url('../../node_modules/still-alive/css/src/__settings.less');
 
 
@@ -20,7 +19,8 @@
 		font-size: (100vw / 24);
 	}
 	@media print {
-		.font-size-el(@g-font-size-kilo);
+		// .h-FontSize; inherited from h1–h6
+		--font-scale: @g-font-size-kilo;
 		text-transform: uppercase;
 	}
 }
