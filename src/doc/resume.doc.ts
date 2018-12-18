@@ -8,7 +8,8 @@ import * as Ajv from 'ajv'
 import {xPersonFullname} from 'aria-patterns'
 import {Processor} from 'template-processor'
 
-const octicons: any = require('octicons')
+import octicons from '../octicons.d' // TODO contribute to DefinitelyTyped or octicons
+const octicons: octicons = require('octicons')
 
 const sdo_jsd = require('schemaorg-jsd')
 const [META_SCHEMATA, SCHEMATA]: Promise<object[]>[] = [
@@ -21,7 +22,7 @@ const RESUME_SCHEMA = requireOther(path.join(__dirname, '../../src/resume.jsd'))
 
 const VERSION: string = require('../../package.json').version
 
-import {ResumePerson, SkillGroup, JobPositionGroup, Skill, JobPosition, Prodev, Award} from '../interfaces'
+import {ResumePerson, SkillGroup, JobPositionGroup, Skill, JobPosition, Prodev, Award} from '../interfaces.d'
 import xAward    from '../tpl/x-award.tpl'
 import xDegree   from '../tpl/x-degree.tpl'
 import xPosition from '../tpl/x-position.tpl'
@@ -70,7 +71,7 @@ async function instructions(document: Document, data: ResumePerson): Promise<voi
 	;(() => {
 		let dataset: {
 			itemprop : string;
-			icon     : string;
+			icon     : keyof octicons;
 			href     : string|null;
 			text     : string|null;
 		}[] = [
@@ -96,7 +97,7 @@ async function instructions(document: Document, data: ResumePerson): Promise<voi
 		// BUG: upgrade to `extrajs-dom^5.1`, then remove manual type inference
 		new xjs.HTMLUListElement(document.querySelector('main header address ul.c-Contact') as HTMLUListElement).populate(function (f, d: {
 			itemprop : string;
-			icon     : string;
+			icon     : keyof octicons;
 			href     : string|null;
 			text     : string|null;
 		}) {
