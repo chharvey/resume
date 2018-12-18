@@ -8,6 +8,8 @@ import * as Ajv from 'ajv'
 import {xPersonFullname} from 'aria-patterns'
 import {Processor} from 'template-processor'
 
+const octicons: any = require('octicons')
+
 const sdo_jsd = require('schemaorg-jsd')
 const [META_SCHEMATA, SCHEMATA]: Promise<object[]>[] = [
 	sdo_jsd.getMetaSchemata(),
@@ -99,7 +101,10 @@ async function instructions(document: Document, data: ResumePerson): Promise<voi
 			text     : string|null;
 		}) {
 			new xjs.HTMLAnchorElement(f.querySelector('.c-Contact__Link') as HTMLAnchorElement).href(d.href)
-			new xjs.Element(f.querySelector('.c-Contact__Icon') !).replaceClassString('{{ octicon }}', d.icon)
+			new xjs.Element(f.querySelector('.c-Contact__Icon') !).innerHTML(octicons[d.icon].toSVG({
+				width : octicons[d.icon].width  * 1.25, // NB{LINK} src/css/_c-Contact.less#L82 // `.c-Contact__Icon@--font-scale`
+				height: octicons[d.icon].height * 1.25, // NB{LINK} src/css/_c-Contact.less#L82 // `.c-Contact__Icon@--font-scale`
+			}))
 			f.querySelector('.c-Contact__Link') !.setAttribute('itemprop', d.itemprop)
 			f.querySelector('.c-Contact__Text') !.textContent = d.text
 		}, dataset)

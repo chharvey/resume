@@ -27,7 +27,7 @@
 	<link rel="stylesheet" href="../../dist/css/c-SkillViz.css" data-local/>
 	<link rel="stylesheet" href="../../dist/css/c-Contact.css" data-local/>
 
-	<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xmeter@7.1.0-beta.0/css/dist/h-Block.css"/> -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xmeter@7.1.0-beta.0/css/dist/h-Block.css"/>
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xmeter@7.1.0-beta.0/css/dist/h-Inline.css"/>
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xmeter@7.1.0-beta.0/css/dist/h-Clearfix.css"/>
 	<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xmeter@7.1.0-beta.0/css/dist/h-Measure.css"/> -->
@@ -41,8 +41,6 @@
 	<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xmeter@7.1.0-beta.0/css/dist/-pt.css"/> -->
 	<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xmeter@7.1.0-beta.0/css/dist/-fz.css"/> -->
 	<link rel="stylesheet" href="../../dist/css/hack.css" data-local/>
-
-	<link rel="stylesheet" href="../bower_components/octicons/octicons/octicons.css"/>
 </head>
 <body>
   <main class="o-Grid o-Grid--resume" itemscope="" itemtype="http://schema.org/Person">
@@ -51,16 +49,16 @@
       <section>
         <h2 class="h-Hidden">Contact</h2>
         <address>
-          <ul class="o-List o-Grid-sK c-Contact">
-            <template>
-              <li class="o-List__Item o-Grid__Item-sK c-Contact__Item">
-                <a class="c-Contact__Link h-Block" href="{{ href }}" itemprop="{{ itemprop }}">
-                  <div class="c-Contact__Icon octicon octicon-{{ octicon }}" aria-hidden="true"></div>
-                  <div class="c-Contact__Text">{{ title }}</div>
-                </a>
-              </li>
-            </template>
-          </ul>
+					<ul class="o-List c-Contact">
+						<template>
+							<li class="o-List__Item c-Contact__Item">
+								<a class="c-Contact__Link h-Block" href="{{ href }}" itemprop="{{ itemprop }}">
+									<i class="c-Contact__Icon" aria-hidden="true"></i>
+									<div class="c-Contact__Text">{{ title }}</div>
+								</a>
+							</li>
+						</template>
+					</ul>
         </address>
       </section>
     </header>
