@@ -1,4 +1,6 @@
+import * as fs from 'fs'
 import * as path from 'path'
+import * as util from 'util'
 
 import * as xjs from 'extrajs-dom'
 
@@ -28,7 +30,30 @@ import xSkill    from '../tpl/x-skill.tpl'
 const doc: Document = xjs.Document.fromFileSync(path.join(__dirname, '../../src/doc/resume.doc.html')).importLinks(__dirname).node // NB relative to dist
 
 async function instructions(document: Document, data: ResumePerson): Promise<void> {
-	;(document.querySelector('#stylesheet') as HTMLLinkElement).href = `https://cdn.jsdelivr.net/gh/chharvey/resume@${VERSION}/dist/css/resume.css`
+	/**
+	 * Adjust local stylesheet hrefs.
+	 */
+	await (async () => {
+		/**
+		 * Are we using a development environment? (Is a `.git` directory present?)
+		 *
+		 * If true, `link[rel~="stylesheet"]` elements should point to relative urls instead of a CDN.
+		 */
+		let dev_env: boolean;
+		try {
+			await util.promisify(fs.readdir)(path.join(__dirname, '../../.git'))
+			dev_env = true
+		} catch (e) {
+			dev_env = false
+		}
+		if (!dev_env) {
+			;(document.querySelectorAll('link[rel~="stylesheet"][data-local]') as NodeListOf<HTMLLinkElement>).forEach((link) => {
+				let matches: RegExpMatchArray|null = link.href.match(/[\w\-]*\.css/)
+				if (matches === null) throw new ReferenceError(`No regex match found in \`${link.href}\`.`)
+				link.href = path.join(`https://cdn.jsdelivr.net/gh/chharvey/resume@${VERSION}/dist/css/`, matches[0])
+			})
+		}
+	})()
 
 	new xjs.Element(document.querySelector('main header [itemprop="name"]') !).empty().append(
 		xPersonFullname.process({
