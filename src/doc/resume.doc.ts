@@ -8,7 +8,7 @@ import * as Ajv from 'ajv'
 import {xPersonFullname} from 'aria-patterns'
 import {Processor} from 'template-processor'
 
-import octicons from '../octicons.d' // TODO contribute to DefinitelyTyped or octicons
+import octicons from '../octicons.d' // NB contributed: https://github.com/primer/octicons/pull/268
 const octicons: octicons = require('octicons')
 
 const sdo_jsd = require('schemaorg-jsd')

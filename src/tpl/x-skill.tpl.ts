@@ -3,7 +3,7 @@ import * as path from 'path'
 import * as xjs from 'extrajs-dom'
 import {Processor} from 'template-processor'
 
-import {Skill} from '../interfaces'
+import {Skill} from '../interfaces.d'
 
 
 const template = xjs.HTMLTemplateElement
