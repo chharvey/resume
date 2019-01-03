@@ -1,0 +1,105 @@
+/*################################*\
+		resume  |  _c-Contact.less
+\*################################*/
+@import (reference) url('../../node_modules/xmeter/css/src/__settings.less');
+@import (reference) url('../../node_modules/xmeter/css/src/__tool.fontsize.less');
+@import (reference) url('../../node_modules/xmeter/css/src/_o-Grid.less');
+@import (reference) url('../../node_modules/xmeter/css/src/_h-Block.less');
+@import (reference) url('../../node_modules/xmeter/css/src/_h-Inline.less');
+@import (reference) url('../../node_modules/xmeter/css/src/_h-FontSize.less');
+@import (reference) url('../../node_modules/xmeter/css/src/_-mb.less');
+@import (reference) url('../../node_modules/still-alive/css/src/__settings.less');
+@import (inline)    url('../../node_modules/octicons/build/build.css');
+
+
+// The contact list in the resume header.
+// Each item represents a piece of information (address, email, etc.)
+//
+// Subcomponents:
+// `__Item` - Each contact info piece
+//
+// ^author
+// : Chris Harvey
+// ^updated
+// : 2017-08-10
+.c-Contact {
+	.-mb-0;
+	@media screen {
+		font-family: @g-fontfamily-base;
+		text-align: center;
+	}
+	@media not all and (min-width: 30em) {
+		.font-size-mod(@g-font-size-kilo);
+	}
+	@media screen and (min-width: 30em) {
+		.o-Grid;
+		grid-template-columns: repeat(3, auto);
+		grid-column-gap: 0.5rem;
+		column-gap: 0.5rem;
+	}
+}
+
+.c-Contact__Item {
+	@media screen and (min-width: 30em) {
+		.o-Grid__Item;
+	}
+	@media print {
+		.h-Inline;
+		&:not(:last-child)::after {
+			content: '\00a0\25aa\00a0'; // 'black small square' ▪
+		}
+	}
+}
+
+.c-Contact__Link,
+.c-Contact__Text {
+	@media screen {
+		.h-Block;
+	}
+}
+
+.c-Contact__Link {
+	&:not(:hover):not(:focus) {
+		text-decoration: unset;
+	}
+}
+
+// This is a glyph icon inside `.o-ListContact__Item`
+// It builds off the GitHub `.octicon` class, so include it in markup.
+// NOTE: we are going to sacrifice vertical rhythm here, due to the
+// inline-block nature of octicons.
+//
+// ```html
+// ul.o-ListContact
+//	 li.o-ListContact__Item
+//		 span.o-ListContact__Item__Icon.octicon
+// ```
+//
+// Extends:
+// `.octicon` (see node_modules/octicons)
+//
+// ^author
+// : Chris Harvey
+// ^updated
+// : 2017-08-09
+.c-Contact__Icon {
+	.h-FontSize;
+	--font-scale: @g-font-size-kilo;
+	display: inline-block;
+	line-height: inherit;
+	width:  calc(var(--font-scale) * var(--lh));
+	height: calc(var(--font-scale) * var(--lh));
+	border: 1px solid currentColor;
+	border-radius: 50%;
+	opacity: 0.8;
+	@media not all and (min-width: 30em), print {
+		display: none;
+	}
+
+	// TEMP override `still-alive/base: i`
+	&:not([lang]) {
+		quotes: none;
+		&::before,
+		&::after { content: none; }
+	}
+}

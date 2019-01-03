@@ -4,7 +4,7 @@ import {xAddress} from 'aria-patterns'
 import * as xjs from 'extrajs-dom'
 import {Processor} from 'template-processor'
 
-import {ResumeCity} from '../interfaces'
+import {ResumeCity} from '../interfaces.d'
 
 type StateType = { code: string, name: string }
 const STATE_DATA: StateType[] = require('extrajs-geo')

@@ -1,10 +1,15 @@
+import * as fs from 'fs'
 import * as path from 'path'
+import * as util from 'util'
 
 import * as xjs from 'extrajs-dom'
 
 import * as Ajv from 'ajv'
 import {xPersonFullname} from 'aria-patterns'
 import {Processor} from 'template-processor'
+
+import octicons from '../octicons.d' // NB contributed: https://github.com/primer/octicons/pull/268
+const octicons: octicons = require('octicons')
 
 const sdo_jsd = require('schemaorg-jsd')
 const [META_SCHEMATA, SCHEMATA]: Promise<object[]>[] = [
@@ -15,7 +20,9 @@ const {requireOther} = require('schemaorg-jsd/lib/requireOther.js')
 
 const RESUME_SCHEMA = requireOther(path.join(__dirname, '../../src/resume.jsd')) // NB relative to dist
 
-import {ResumePerson, SkillGroup, JobPositionGroup, Skill, JobPosition, Prodev, Award} from '../interfaces'
+const VERSION: string = require('../../package.json').version
+
+import {ResumePerson, SkillGroup, JobPositionGroup, Skill, JobPosition, Prodev, Award} from '../interfaces.d'
 import xAward    from '../tpl/x-award.tpl'
 import xDegree   from '../tpl/x-degree.tpl'
 import xPosition from '../tpl/x-position.tpl'
@@ -26,6 +33,31 @@ import xSkill    from '../tpl/x-skill.tpl'
 const doc: Document = xjs.Document.fromFileSync(path.join(__dirname, '../../src/doc/resume.doc.html')).importLinks(__dirname).node // NB relative to dist
 
 async function instructions(document: Document, data: ResumePerson): Promise<void> {
+	/**
+	 * Adjust local stylesheet hrefs.
+	 */
+	await (async () => {
+		/**
+		 * Are we using a development environment? (Is a `.git` directory present?)
+		 *
+		 * If true, `link[rel~="stylesheet"]` elements should point to relative urls instead of a CDN.
+		 */
+		let dev_env: boolean;
+		try {
+			await util.promisify(fs.readdir)(path.join(__dirname, '../../.git'))
+			dev_env = true
+		} catch (e) {
+			dev_env = false
+		}
+		if (!dev_env) {
+			;(document.querySelectorAll('link[rel~="stylesheet"][data-local]') as NodeListOf<HTMLLinkElement>).forEach((link) => {
+				let matches: RegExpMatchArray|null = link.href.match(/[\w\-]*\.css/)
+				if (matches === null) throw new ReferenceError(`No regex match found in \`${link.href}\`.`)
+				link.href = path.join(`https://cdn.jsdelivr.net/gh/chharvey/resume@${VERSION}/dist/css/`, matches[0])
+			})
+		}
+	})()
+
 	new xjs.Element(document.querySelector('main header [itemprop="name"]') !).empty().append(
 		xPersonFullname.process({
 			familyName      : data.familyName      || '',
@@ -39,7 +71,7 @@ async function instructions(document: Document, data: ResumePerson): Promise<voi
 	;(() => {
 		let dataset: {
 			itemprop : string;
-			icon     : string;
+			icon     : keyof octicons;
 			href     : string|null;
 			text     : string|null;
 		}[] = [
@@ -65,12 +97,15 @@ async function instructions(document: Document, data: ResumePerson): Promise<voi
 		// BUG: upgrade to `extrajs-dom^5.1`, then remove manual type inference
 		new xjs.HTMLUListElement(document.querySelector('main header address ul.c-Contact') as HTMLUListElement).populate(function (f, d: {
 			itemprop : string;
-			icon     : string;
+			icon     : keyof octicons;
 			href     : string|null;
 			text     : string|null;
 		}) {
 			new xjs.HTMLAnchorElement(f.querySelector('.c-Contact__Link') as HTMLAnchorElement).href(d.href)
-			new xjs.Element(f.querySelector('.c-Contact__Icon') !).replaceClassString('{{ octicon }}', d.icon)
+			new xjs.Element(f.querySelector('.c-Contact__Icon') !).innerHTML(octicons[d.icon].toSVG({
+				width : octicons[d.icon].width  * 1.25, // NB{LINK} src/css/_c-Contact.less#L82 // `.c-Contact__Icon@--font-scale`
+				height: octicons[d.icon].height * 1.25, // NB{LINK} src/css/_c-Contact.less#L82 // `.c-Contact__Icon@--font-scale`
+			}))
 			f.querySelector('.c-Contact__Link') !.setAttribute('itemprop', d.itemprop)
 			f.querySelector('.c-Contact__Text') !.textContent = d.text
 		}, dataset)

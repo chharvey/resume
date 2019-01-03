@@ -1,5 +1,5 @@
 <template>
-  <dt class="o-ListAchv__Award h-Inline" itemprop="award" itemscope="" itemtype="Degree">
+  <dt class="o-ListAchv__Award" itemprop="award" itemscope="" itemtype="Degree">
     <slot itemprop="name">{{ field }}</slot>,
     <span itemprop="gpa" itemscope="" itemtype="http://schema.org/Rating">
       <meta itemprop="worstRating" content="0"/>
@@ -7,7 +7,7 @@
       <abbr class="c-Acro" title="Grade Point Average" itemprop="name">GPA</abbr>
     </span>
   </dt>
-  <dd class="o-ListAchv__Date h-Inline h-Clearfix">
+  <dd class="o-ListAchv__Date h-Clearfix">
     (<time itemprop="timeEarned">{{ year }}</time><small>in progress</small>)
   </dd>
 </template>

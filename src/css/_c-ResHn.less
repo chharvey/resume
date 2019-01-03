@@ -1,0 +1,26 @@
+/*################################*\
+		resume  |  _c-ResHn.less
+\*################################*/
+@import (reference) url('../../node_modules/xmeter/css/src/__settings.less');
+@import (reference) url('../../node_modules/still-alive/css/src/__settings.less');
+
+
+.c-ResHn {
+	font-weight: 900;
+	font-variant: small-caps;
+	text-align: inherit;
+	@media screen {
+		font-family: @g-fontfamily-base;
+		font-size: (100vw / 16);
+		line-height: inherit; // fluid with viewport
+		text-align: center;
+	}
+	@media screen and (min-width: 45em) {
+		font-size: (100vw / 24);
+	}
+	@media print {
+		// .h-FontSize; inherited from h1–h6
+		--font-scale: @g-font-size-kilo;
+		text-transform: uppercase;
+	}
+}

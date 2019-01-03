@@ -4,7 +4,7 @@ import {Date as xjs_Date} from 'extrajs'
 import * as xjs from 'extrajs-dom'
 import {Processor} from 'template-processor'
 
-import {JobPosition} from '../interfaces'
+import {JobPosition} from '../interfaces.d'
 import xCity from './x-city.tpl'
 
 
