@@ -2,10 +2,11 @@ import * as fs from 'fs'
 import * as path from 'path'
 import * as util from 'util'
 
-import * as xjs from 'extrajs-dom'
-
 import * as Ajv from 'ajv'
+import { JSDOM } from 'jsdom'
+
 import {xPersonFullname} from 'aria-patterns'
+import * as xjs from 'extrajs-dom'
 import {Processor} from 'template-processor'
 
 import octicons from '../octicons.d' // NB contributed: https://github.com/primer/octicons/pull/268
@@ -30,9 +31,14 @@ import xProdev   from '../tpl/x-prodev.tpl'
 import xSkill    from '../tpl/x-skill.tpl'
 
 
+interface OptsTypeResume {
+	/** `innerHTML` of any `<script>` elements to append to the end of `<body>`. */
+	scripts?: string[];
+}
+
 const doc: Document = xjs.Document.fromFileSync(path.join(__dirname, '../../src/doc/resume.doc.html')).importLinks(__dirname).node // NB relative to dist
 
-async function instructions(document: Document, data: ResumePerson): Promise<void> {
+async function instructions(document: Document, data: ResumePerson, opts: OptsTypeResume): Promise<void> {
 	/**
 	 * Adjust local stylesheet hrefs.
 	 */
@@ -183,9 +189,15 @@ async function instructions(document: Document, data: ResumePerson): Promise<voi
 			]
 		)
 	})()
+
+	;(() => {
+		new xjs.Element(document.body).append(...(opts.scripts || []).map((script) =>
+			JSDOM.fragment(script).querySelector('script')
+		))
+	})()
 }
 
-export default async function (data: ResumePerson): Promise<Document> {
+export default async function (data: ResumePerson, opts?: OptsTypeResume): Promise<Document> {
 	let ajv: Ajv.Ajv = new Ajv()
 	ajv.addMetaSchema(await META_SCHEMATA).addSchema(await SCHEMATA)
 	let is_data_valid: boolean = ajv.validate(RESUME_SCHEMA, data) as boolean
@@ -196,7 +208,7 @@ export default async function (data: ResumePerson): Promise<Document> {
 		console.error(e)
 		throw e
 	}
-	// return Processor.processAsync(doc, instructions, data) // TODO on template-processor^2
-	await instructions(doc, data)
+	// return Processor.processAsync(doc, instructions, data, opts) // TODO on template-processor^2
+	await instructions(doc, data, opts || {})
 	return doc
 }
