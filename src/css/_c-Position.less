@@ -1,6 +1,8 @@
 /*################################*\
 		resume  |  _c-Posiiton.less
 \*################################*/
+@import (reference) url('../../node_modules/xmeter/css/src/_h-Inline.less');
+@import (reference) url('../../node_modules/xmeter/css/src/_h-Clearfix.less');
 @import (reference) url('../../node_modules/still-alive/css/src/__settings.less');
 
 
@@ -47,14 +49,17 @@
 	@media screen {
 		font-family: @g-fontfamily-base;
 	}
+	@media screen and (min-width: 60em) {
+		.h-Inline;
+	}
 }
 
 .c-Position__Dates,
 .c-Position__Place {
+	@media screen {
+		.h-Inline;
+	}
 	@media print {
-		// override h-Inline
-		display: block;
-		line-height: inherit;
 		margin-bottom: 0;
 	}
 }
@@ -62,11 +67,21 @@
 // The title of a job, e.g. a position held at an organization.
 /*h3*/.c-Position__Name {
 	font-weight: 600; // override still-alive h3 base
+	@media screen and (min-width: 60em) {
+		margin-right: 1rem;
+		@supports (margin-inline-end: 1rem) {
+			margin-right: unset;
+			margin-inline-end: 1rem;
+		}
+	}
 }
 
 // The name/url of an organization.
 .c-Position__Org {
 	font-style: italic;
+	@media screen and (min-width: 60em) {
+		.h-Clearfix;
+	}
 	@media print {
 		justify-self: end;
 	}
