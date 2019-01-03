@@ -21,8 +21,6 @@ const {requireOther} = require('schemaorg-jsd/lib/requireOther.js')
 
 const RESUME_SCHEMA = requireOther(path.join(__dirname, '../../src/resume.jsd')) // NB relative to dist
 
-const VERSION: string = require('../../package.json').version
-
 import {ResumePerson, SkillGroup, JobPositionGroup, Skill, JobPosition, Prodev, Award} from '../interfaces.d'
 import xAward    from '../tpl/x-award.tpl'
 import xDegree   from '../tpl/x-degree.tpl'
@@ -32,6 +30,11 @@ import xSkill    from '../tpl/x-skill.tpl'
 
 
 interface OptsTypeResume {
+	/**
+	 * Base directory of this repository, relative to output file.
+	 * @default `./node_modules/resume/`
+	 */
+	basedir?: string;
 	/** `innerHTML` of any `<script>` elements to append to the end of `<body>`. */
 	scripts?: string[];
 }
@@ -59,7 +62,7 @@ async function instructions(document: Document, data: ResumePerson, opts: OptsTy
 			;(document.querySelectorAll('link[rel~="stylesheet"][data-local]') as NodeListOf<HTMLLinkElement>).forEach((link) => {
 				let matches: RegExpMatchArray|null = link.href.match(/[\w\-]*\.css/)
 				if (matches === null) throw new ReferenceError(`No regex match found in \`${link.href}\`.`)
-				link.href = path.join(`https://cdn.jsdelivr.net/gh/chharvey/resume@${VERSION}/dist/css/`, matches[0])
+				link.href = path.join(opts.basedir || `./node_modules/resume/`, `./dist/css/`, matches[0])
 			})
 		}
 	})()
