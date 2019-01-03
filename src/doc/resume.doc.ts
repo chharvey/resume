@@ -20,8 +20,6 @@ const {requireOther} = require('schemaorg-jsd/lib/requireOther.js')
 
 const RESUME_SCHEMA = requireOther(path.join(__dirname, '../../src/resume.jsd')) // NB relative to dist
 
-const VERSION: string = require('../../package.json').version
-
 import {ResumePerson, SkillGroup, JobPositionGroup, Skill, JobPosition, Prodev, Award} from '../interfaces.d'
 import xAward    from '../tpl/x-award.tpl'
 import xDegree   from '../tpl/x-degree.tpl'
@@ -30,9 +28,17 @@ import xProdev   from '../tpl/x-prodev.tpl'
 import xSkill    from '../tpl/x-skill.tpl'
 
 
+interface OptsTypeResume {
+	/**
+	 * Base directory of this repository, relative to output file.
+	 * @default `./node_modules/resume/`
+	 */
+	basedir?: string;
+}
+
 const doc: Document = xjs.Document.fromFileSync(path.join(__dirname, '../../src/doc/resume.doc.html')).importLinks(__dirname).node // NB relative to dist
 
-async function instructions(document: Document, data: ResumePerson): Promise<void> {
+async function instructions(document: Document, data: ResumePerson, opts: OptsTypeResume): Promise<void> {
 	/**
 	 * Adjust local stylesheet hrefs.
 	 */
@@ -53,7 +59,7 @@ async function instructions(document: Document, data: ResumePerson): Promise<voi
 			;(document.querySelectorAll('link[rel~="stylesheet"][data-local]') as NodeListOf<HTMLLinkElement>).forEach((link) => {
 				let matches: RegExpMatchArray|null = link.href.match(/[\w\-]*\.css/)
 				if (matches === null) throw new ReferenceError(`No regex match found in \`${link.href}\`.`)
-				link.href = path.join(`https://cdn.jsdelivr.net/gh/chharvey/resume@${VERSION}/dist/css/`, matches[0])
+				link.href = path.join(opts.basedir || `./node_modules/resume/`, `./dist/css/`, matches[0])
 			})
 		}
 	})()
@@ -185,7 +191,7 @@ async function instructions(document: Document, data: ResumePerson): Promise<voi
 	})()
 }
 
-export default async function (data: ResumePerson): Promise<Document> {
+export default async function (data: ResumePerson, opts?: OptsTypeResume): Promise<Document> {
 	let ajv: Ajv.Ajv = new Ajv()
 	ajv.addMetaSchema(await META_SCHEMATA).addSchema(await SCHEMATA)
 	let is_data_valid: boolean = ajv.validate(RESUME_SCHEMA, data) as boolean
@@ -197,6 +203,6 @@ export default async function (data: ResumePerson): Promise<Document> {
 		throw e
 	}
 	// return Processor.processAsync(doc, instructions, data) // TODO on template-processor^2
-	await instructions(doc, data)
+	await instructions(doc, data, opts || {})
 	return doc
 }
