@@ -67,13 +67,21 @@ function test_out() {
 
 async function test_run() {
 	const {requireOther} = require('schemaorg-jsd/lib/requireOther.js')
-
 	const resume = require('./')
-	const DATA = requireOther('./test/src/sample-data.jsonld')
 
-	let contents = new xjs.Document(await resume(DATA)).innerHTML()
-	await mkdirp('./test/out/')
-	return util.promisify(fs.writeFile)(path.resolve(__dirname, './test/out/test.html'), contents, 'utf8')
+	const DATA = requireOther('./test/src/sample-data.jsonld')
+	const OPTS = {
+		scripts: [
+			`<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML,https://chharvey.github.io/chhlib/mathjax-localconfig.js"></script>`,
+		],
+	}
+
+	let xdocument = (await Promise.all([
+		new xjs.Document(await resume(DATA, OPTS)),
+		mkdirp('./test/out/'),
+	]))[0]
+
+	return util.promisify(fs.writeFile)(path.resolve(__dirname, './test/out/test.html'), xdocument.innerHTML(), 'utf8')
 }
 
 const test = gulp.series(test_out, test_run)
