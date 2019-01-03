@@ -53,9 +53,9 @@
 					<ul class="o-List c-Contact">
 						<template>
 							<li class="o-List__Item c-Contact__Item">
-								<a class="c-Contact__Link h-Block" href="{{ href }}" itemprop="{{ itemprop }}">
+								<a class="c-Contact__Link" href="{{ href }}" itemprop="{{ itemprop }}">
 									<i class="c-Contact__Icon" aria-hidden="true"></i>
-									<div class="c-Contact__Text">{{ title }}</div>
+									<slot class="c-Contact__Text">{{ title }}</slot>
 								</a>
 							</li>
 						</template>

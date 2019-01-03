@@ -4,6 +4,8 @@
 @import (reference) url('../../node_modules/xmeter/css/src/__settings.less');
 @import (reference) url('../../node_modules/xmeter/css/src/__tool.fontsize.less');
 @import (reference) url('../../node_modules/xmeter/css/src/_o-Grid.less');
+@import (reference) url('../../node_modules/xmeter/css/src/_h-Block.less');
+@import (reference) url('../../node_modules/xmeter/css/src/_h-Inline.less');
 @import (reference) url('../../node_modules/xmeter/css/src/_h-FontSize.less');
 @import (reference) url('../../node_modules/xmeter/css/src/_-mb.less');
 @import (reference) url('../../node_modules/still-alive/css/src/__settings.less');
@@ -37,23 +39,22 @@
 	}
 }
 
-.c-Contact__Item,
-.c-Contact__Link,
-.c-Contact__Text {
-	@media print {
-		display: inline;
-		line-height: 0;
-	}
-}
-
 .c-Contact__Item {
 	@media screen and (min-width: 30em) {
 		.o-Grid__Item;
 	}
 	@media print {
+		.h-Inline;
 		&:not(:last-child)::after {
 			content: '\00a0\25aa\00a0'; // 'black small square' ▪
 		}
+	}
+}
+
+.c-Contact__Link,
+.c-Contact__Text {
+	@media screen {
+		.h-Block;
 	}
 }
 
