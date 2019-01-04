@@ -57,6 +57,8 @@ export interface JobPosition extends sdo.JobPosting {
 		name: string;
 	};
 	jobLocation: ResumeCity;
+	/** @override */
+	responsibilities?: string[];
 	/** the start date of the job position */
 	$start: string;
 	/** the end date of the job position */
@@ -86,7 +88,7 @@ export interface Award {
 	/** date(s) relevant to the award */
 	dates: string;
 	/** custom HTML string defining this award */
-	text: string|string[]; // FIXME use only string
+	text: string;
 	/** any sub-awards associated with this award */
 	sub_awards?: Award[]
 }

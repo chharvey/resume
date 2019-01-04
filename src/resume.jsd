@@ -49,6 +49,7 @@
 				{
 					"required": ["identifier", "title", "hiringOrganization", "jobLocation", "$start"],
 					"properties": {
+						"responsibilities": { "type": "array", "items": { "type": "string" } },
 						"$start": { "type": "string", "description": "the start date of the job position" },
 						"$end"  : { "type": "string", "description": "the end   date of the job position" },
 						"hiringOrganization": {
@@ -84,11 +85,7 @@
 			"required": ["dates", "text"],
 			"properties": {
 				"dates": { "type": "string" , "description": "date(s) relevant to the award" },
-				"text" : {
-					"type" : ["string", "array"],
-					"items": { "type": "string" },
-					"description": "custom HTML defining this award"
-				},
+				"text" : { "type" : "string", "description": "custom HTML defining this award" },
 				"sub_awards": {
 					"type": "array",
 					"description": "any sub-awards within this award",

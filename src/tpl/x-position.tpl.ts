@@ -13,9 +13,9 @@ const template = xjs.HTMLTemplateElement
 	.node
 
 function instructions(frag: DocumentFragment, data: JobPosition): void {
-	let date_start = new Date(data.$start)
-	let date_end   = (data.$end) ? new Date(data.$end) : null
-	let descriptions = (typeof data.responsibilities === 'string') ? [data.responsibilities] : data.responsibilities || []  // FIXME use string[]
+	let date_start  : Date      = new Date(data.$start)
+	let date_end    : Date|null = (data.$end) ? new Date(data.$end) : null
+	let descriptions: string[]  = data.responsibilities || []
 
 	frag.querySelector('.c-Position'       ) !.id        = data.identifier
 	frag.querySelector('[itemprop="title"]') !.innerHTML = data.title
@@ -41,7 +41,8 @@ function instructions(frag: DocumentFragment, data: JobPosition): void {
 		.append(xCity.process(data.jobLocation, { itemprop: 'jobLocation' }))
 		.trimInner()
 
-	new xjs.HTMLUListElement(frag.querySelector('.c-Position__Body') as HTMLUListElement).populate(function (f, d) {
+	// BUG: upgrade to `extrajs-dom^5.1`, then remove manual type inference
+	new xjs.HTMLUListElement(frag.querySelector('.c-Position__Body') as HTMLUListElement).populate(function (f, d: string) {
 		f.querySelector('li') !.innerHTML = d
 	}, descriptions)
 
