@@ -21,7 +21,7 @@ const {requireOther} = require('schemaorg-jsd/lib/requireOther.js')
 
 const RESUME_SCHEMA = requireOther(path.join(__dirname, '../../src/resume.jsd')) // NB relative to dist
 
-import {ResumePerson, SkillGroup, JobPositionGroup, Skill, JobPosition, Prodev, Award} from '../interfaces.d'
+import {ResumePerson, JobPositionGroup, Skill, Prodev, Award} from '../interfaces.d'
 import xAward    from '../tpl/x-award.tpl'
 import xDegree   from '../tpl/x-degree.tpl'
 import xPosition from '../tpl/x-position.tpl'
@@ -103,13 +103,7 @@ async function instructions(document: Document, data: ResumePerson, opts: OptsTy
 				text: data.$contactText && data.$contactText.url || data.url || null,
 			},
 		]
-		// BUG: upgrade to `extrajs-dom^5.1`, then remove manual type inference
-		new xjs.HTMLUListElement(document.querySelector('main header address ul.c-Contact') as HTMLUListElement).populate(function (f, d: {
-			itemprop : string;
-			icon     : keyof octicons;
-			href     : string|null;
-			text     : string|null;
-		}) {
+		new xjs.HTMLUListElement(document.querySelector('main header address ul.c-Contact') as HTMLUListElement).populate(function (f, d) {
 			new xjs.HTMLAnchorElement(f.querySelector('.c-Contact__Link') as HTMLAnchorElement).href(d.href)
 			new xjs.Element(f.querySelector('.c-Contact__Icon') !).innerHTML(octicons[d.icon].toSVG({
 				width : octicons[d.icon].width  * 1.25, // NB{LINK} src/css/_c-Contact.less#L82 // `.c-Contact__Icon@--font-scale`
@@ -125,8 +119,7 @@ async function instructions(document: Document, data: ResumePerson, opts: OptsTy
 		...(data.$degrees || []).map((item) => xDegree.process(item))
 	)
 
-	// BUG: upgrade to `extrajs-dom^5.1`, then remove manual type inference
-	new xjs.HTMLUListElement(document.querySelector('.o-Grid--skillGroups') as HTMLUListElement).populate(function (f, d: SkillGroup) {
+	new xjs.HTMLUListElement(document.querySelector('.o-Grid--skillGroups') as HTMLUListElement).populate(function (f, d) {
 		f.querySelector('.o-List__Item'    ) !.id          = `${d.identifier}-item` // TODO fix this after fixing hidden-ness
 		f.querySelector('.c-Position'      ) !.id          = d.identifier
 		f.querySelector('.c-Position__Name') !.textContent = d.name
@@ -135,8 +128,7 @@ async function instructions(document: Document, data: ResumePerson, opts: OptsTy
 		)
 	}, data.$skills || [])
 
-	// BUG: upgrade to `extrajs-dom^5.1`, then remove manual type inference
-	new xjs.HTMLUListElement(document.querySelector('#skills .o-List--print') as HTMLUListElement).populate(function (f, d: Element) {
+	new xjs.HTMLUListElement(document.querySelector('#skills .o-List--print') as HTMLUListElement).populate(function (f, d) {
 		f.querySelector('li') !.innerHTML = d.innerHTML
 	}, [...document.querySelector('.o-Grid--skillGroups') !.querySelectorAll('dt.o-Grid__Item')])
 
@@ -145,8 +137,7 @@ async function instructions(document: Document, data: ResumePerson, opts: OptsTy
 		const xPositionGroup: Processor<JobPositionGroup, object> = new Processor(templateEl, function (frag, datagroup) {
 			frag.querySelector('.o-Grid__Item--exp') !.id = datagroup.identifier
 			frag.querySelector('.c-ExpHn') !.textContent = datagroup.name
-			// BUG: upgrade to `extrajs-dom^5.1`, then remove manual type inference
-			new xjs.HTMLUListElement(frag.querySelector('ul.o-List') as HTMLUListElement).populate(function (f, d: JobPosition) {
+			new xjs.HTMLUListElement(frag.querySelector('ul.o-List') as HTMLUListElement).populate(function (f, d) {
 				new xjs.HTMLLIElement(f.querySelector('li') !).empty().append(xPosition.process(d))
 			}, datagroup.itemListElement)
 		})

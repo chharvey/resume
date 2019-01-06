@@ -41,8 +41,7 @@ function instructions(frag: DocumentFragment, data: JobPosition): void {
 		.append(xCity.process(data.jobLocation, { itemprop: 'jobLocation' }))
 		.trimInner()
 
-	// BUG: upgrade to `extrajs-dom^5.1`, then remove manual type inference
-	new xjs.HTMLUListElement(frag.querySelector('.c-Position__Body') as HTMLUListElement).populate(function (f, d: string) {
+	new xjs.HTMLUListElement(frag.querySelector('.c-Position__Body') as HTMLUListElement).populate(function (f, d) {
 		f.querySelector('li') !.innerHTML = d
 	}, descriptions)
 
