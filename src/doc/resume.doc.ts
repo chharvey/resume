@@ -188,10 +188,10 @@ async function instructions(document: Document, data: ResumePerson, opts: OptsTy
 	})()
 }
 
-export default async function (data: ResumePerson, opts?: OptsTypeResume): Promise<Document> {
+export default async function (data: ResumePerson|Promise<ResumePerson>, opts?: OptsTypeResume|Promise<OptsTypeResume>): Promise<Document> {
 	let ajv: Ajv.Ajv = new Ajv()
 	ajv.addMetaSchema(await META_SCHEMATA).addSchema(await SCHEMATA)
-	let is_data_valid: boolean = ajv.validate(await RESUME_SCHEMA, data) as boolean
+	let is_data_valid: boolean = ajv.validate(await RESUME_SCHEMA, await data) as boolean
 	if (!is_data_valid) {
 		let e: TypeError & { filename?: string; details?: Ajv.ErrorObject } = new TypeError(ajv.errors ![0].message)
 		e.filename = 'resume.json'
@@ -200,6 +200,6 @@ export default async function (data: ResumePerson, opts?: OptsTypeResume): Promi
 		throw e
 	}
 	// return Processor.processAsync(doc, instructions, data, opts) // TODO on template-processor^2
-	await instructions(doc, data, opts || {})
+	await instructions(doc, await data, await opts || {})
 	return doc
 }

@@ -75,12 +75,12 @@ async function test_run() {
 		],
 	}
 
-	let xdocument = (await Promise.all([
-		new xjs.Document(await resume(await DATA, OPTS)),
+	let doc = (await Promise.all([
+		resume(DATA, OPTS),
 		mkdirp('./test/out/'),
 	]))[0]
 
-	return util.promisify(fs.writeFile)(path.resolve(__dirname, './test/out/test.html'), xdocument.innerHTML(), 'utf8')
+	return util.promisify(fs.writeFile)(path.resolve(__dirname, './test/out/test.html'), new xjs.Document(doc).innerHTML(), 'utf8')
 }
 
 const test = gulp.series(test_out, test_run)
