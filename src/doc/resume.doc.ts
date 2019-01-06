@@ -114,7 +114,8 @@ async function instructions(document: Document, data: ResumePerson, opts: OptsTy
 		}, dataset)
 	})()
 
-	document.querySelector('#about slot[name="about"]') !.textContent = data.description || ''
+	document.querySelector('.c-Tagline[itemprop="description"]') !.textContent = data.description || ''
+
 	new xjs.Element(document.querySelector('#edu .o-ListAchv') !).empty().append(
 		...(data.$degrees || []).map((item) => xDegree.process(item))
 	)
