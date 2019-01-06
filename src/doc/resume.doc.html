@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <title>resume</title>
+  <meta charset="utf-8"/>
+  <meta name="author" content="Christopher H. Harvey"/>
+  <meta name="description" content="Resume of Christopher H. Harvey of Fairfax, VA."/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="icon" href="../core/images/favicon.ico"/>
+
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/chharvey/still-alive@v1.4.3/css/still-alive.css"/>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xmeter@7.1.0-beta.0/css/dist/base.css"/>
+	<link rel="stylesheet" href="../../dist/css/base.css" data-local/>
+	<link rel="stylesheet" href="../../dist/css/dev.css" data-local/>
+
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xmeter@7.1.0-beta.0/css/dist/o-List.css"/>
+	<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xmeter@7.1.0-beta.0/css/dist/o-Flex.css"/> -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xmeter@7.1.0-beta.0/css/dist/o-Grid.css"/>
+	<link rel="stylesheet" href="../../dist/css/o-List--print.css" data-local/>
+	<link rel="stylesheet" href="../../dist/css/o-Grid--resume.css" data-local/>
+	<link rel="stylesheet" href="../../dist/css/o-Grid--skillGroups.css" data-local/>
+	<link rel="stylesheet" href="../../dist/css/o-ListAchv.css" data-local/>
+
+	<link rel="stylesheet" href="../../dist/css/c-ResHn.css" data-local/>
+	<link rel="stylesheet" href="../../dist/css/c-ExpHn.css" data-local/>
+	<link rel="stylesheet" href="../../dist/css/c-Position.css" data-local/>
+	<link rel="stylesheet" href="../../dist/css/c-Institution.css" data-local/>
+	<link rel="stylesheet" href="../../dist/css/c-SkillViz.css" data-local/>
+	<link rel="stylesheet" href="../../dist/css/c-Contact.css" data-local/>
+	<link rel="stylesheet" href="../../dist/css/c-Tagline.css" data-local/>
+
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xmeter@7.1.0-beta.0/css/dist/h-Block.css"/>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xmeter@7.1.0-beta.0/css/dist/h-Inline.css"/>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xmeter@7.1.0-beta.0/css/dist/h-Clearfix.css"/>
+	<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xmeter@7.1.0-beta.0/css/dist/h-Measure.css"/> -->
+	<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xmeter@7.1.0-beta.0/css/dist/h-Constrain.css"/> -->
+	<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xmeter@7.1.0-beta.0/css/dist/h-FontSize.css"/> -->
+	<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xmeter@7.1.0-beta.0/css/dist/h-Ruled.css"/> -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aria-patterns@2.0.0-alpha.0/dist/x-hidden/css/h-Hidden.css"/>
+	<link rel="stylesheet" href="../../dist/css/h-Hr.css" data-local/>
+
+	<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xmeter@7.1.0-beta.0/css/dist/-mb.css"/> -->
+	<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xmeter@7.1.0-beta.0/css/dist/-pt.css"/> -->
+	<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xmeter@7.1.0-beta.0/css/dist/-fz.css"/> -->
+	<link rel="stylesheet" href="../../dist/css/hack.css" data-local/>
+</head>
+<body>
+  <main class="o-Grid o-Grid--resume" itemscope="" itemtype="http://schema.org/Person">
+    <header class="o-Grid__Item--maincol h-Hr">
+      <h1 class="c-ResHn" itemprop="name">{{ name }}</h1>
+      <section>
+        <h2 class="h-Hidden">Contact</h2>
+        <address>
+					<ul class="o-List c-Contact">
+						<template>
+							<li class="o-List__Item c-Contact__Item">
+								<a class="c-Contact__Link" href="{{ href }}" itemprop="{{ itemprop }}">
+									<i class="c-Contact__Icon" aria-hidden="true"></i>
+									<slot class="c-Contact__Text">{{ title }}</slot>
+								</a>
+							</li>
+						</template>
+					</ul>
+        </address>
+      </section>
+    </header>
+    <section class="o-Grid__Item o-Grid__Item--exp" id="about">
+      <h2 class="o-Grid__Item c-ExpHn h-Hidden">About</h2>
+      <p class="o-Grid__Item--maincol c-Tagline" itemprop="description">{{ about }}</p>
+    </section>
+    <section class="o-Grid__Item o-Grid__Item--exp" id="skills">
+      <h2 class="o-Grid__Item c-ExpHn">Skills</h2>
+      <ul class="o-List o-List--print">
+        <template>
+          <li class="o-List__Item h-Inline">{{ Rating#name }}</li>
+        </template>
+      </ul>
+      <ul class="o-Grid__Item o-Grid__Item--maincol o-List o-Grid o-Grid--skillGroups">
+        <template>
+          <li class="o-List__Item o-Grid__Item" id="{{ ItemList#identifier }}-item">
+            <section class="c-Position" id="{{ ItemList#identifier }}">
+              <h3 class="c-Position__Name">{{ ItemList#name }}</h3>
+              <dl class="o-Grid o-Grid--skill">{{ ItemList#itemListElement }}</dl>
+            </section>
+          </li>
+        </template>
+      </ul>
+    </section>
+    <template id="experience">
+      <section class="o-Grid__Item o-Grid__Item--exp" id="{{ ItemList#identifier }}">
+        <h2 class="o-Grid__Item c-ExpHn">{{ ItemList#name }}</h2>
+        <ul class="o-Grid__Item o-Grid__Item--maincol o-List">
+          <template>
+            <li class="o-List__Item">{{ ItemList#itemListElement }}</li>
+          </template>
+        </ul>
+      </section>
+    </template>
+    <section class="o-Grid__Item o-Grid__Item--exp" id="edu">
+      <h2 class="o-Grid__Item c-ExpHn">Education</h2>
+      <section class="o-Grid__Item o-Grid__Item--maincol c-Institution" id="VT">
+        <h3 class="c-Institution__Name" itemprop="alumniOf" itemscope="" itemtype="http://schema.org/CollegeOrUniversity">
+          <a class="c-Camo" rel="external" href="https://www.vt.edu/" itemprop="url">
+            <span itemprop="name">Virginia Polytechnic Institute and State University</span>
+          </a>
+        </h3>
+        <dl class="o-ListAchv c-Institution__List">{{ (resume.degrees || []).map((item) => item.view()).join('') }}</dl>
+      </section>
+    </section>
+    <template id="achievements">
+      <section class="o-Grid__Item o-Grid__Item--exp" id="{{ id }}">
+        <h2 class="o-Grid__Item c-ExpHn">{{ title }}</h2>
+        <dl class="o-Grid__Item o-Grid__Item--maincol o-ListAchv {{ classes }}">{{ data.map((item) => item.view()).join('') }}</dl>
+      </section>
+    </template>
+    <footer class="o-Grid__Item o-Grid__Item--maincol -fz-el-mill">
+      <p>This r&eacute;sum&eacute; is 100% hand-written, by me! Check out the
+        <a rel="external" href="https://github.com/chharvey/chharvey.github.io/blob/master/resume/resume.jade">source code</a>
+        on GitHub.</p>
+    </footer>
+  </main>
+</body>
+</html>

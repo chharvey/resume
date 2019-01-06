@@ -1,0 +1,42 @@
+/*################################*\
+		resume  |  _o-ListAchv.less
+\*################################*/
+@import (reference) url('../../node_modules/xmeter/css/src/_h-Inline.less');
+@import (reference) url('../../node_modules/still-alive/css/src/__settings.less');
+
+
+// A list of achievements such as awards or memberships.
+.o-ListAchv {
+	& & {
+		display: none;
+	}
+	@media print {
+		display: grid;
+		grid-template-columns: @golden3 auto;
+		& > dt { order:      var(--nth-of-type)     ; }
+		& > dd { order: calc(var(--nth-of-type) - 1); }
+	}
+}
+
+.o-ListAchv__Award,
+.o-ListAchv__Date {
+	@media screen {
+		.h-Inline;
+	}
+}
+
+// An award in a list of achievements.
+.o-ListAchv__Award {
+	@media screen {
+		margin-right: 0.5rem;
+	}
+}
+
+// A date for an award/achievement.
+.o-ListAchv__Date {
+	@media print {
+		&::after {
+			content: none; // undo .h-Clearfix
+		}
+	}
+}

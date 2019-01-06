@@ -1,0 +1,22 @@
+/*################################*\
+		resume  |  _c-Tagline.less
+\*################################*/
+@import (reference) url('../../node_modules/xmeter/css/src/__settings.less');
+@import (reference) url('../../node_modules/still-alive/css/src/__settings.less');
+
+
+// The Tagline, or blurb under About.
+// ^author
+// : Chris Harvey
+// ^updated
+// : 2019-01-05
+.c-Tagline {
+	font-weight: 600;
+	letter-spacing: (-1ch / 40);
+	@media screen {
+		font-family: @g-fontfamily-base;
+		@media (min-width: 60em) {
+			font-size: (@g-font-size-kilo * 1em);
+		}
+	}
+}

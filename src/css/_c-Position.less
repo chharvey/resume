@@ -1,0 +1,105 @@
+/*################################*\
+		resume  |  _c-Position.less
+\*################################*/
+@import (reference) url('../../node_modules/xmeter/css/src/_h-Inline.less');
+@import (reference) url('../../node_modules/xmeter/css/src/_h-Clearfix.less');
+@import (reference) url('../../node_modules/still-alive/css/src/__settings.less');
+
+
+// A Org is an item in a Skill. It has an organization name and location.
+// It usually contains an `Org__Header` and an `Org__Detail`.
+//
+// On the same level as an Org, an Institution (`Org--inst`) is an educational organization
+// (college/university) with a name and location. It is also in a Skill, namely,
+// the one corresponding to Education.
+//
+// ^author
+// : Chris Harvey
+// ^updated
+// : 2015-05-10
+
+.c-Position {
+	@media print {
+		display: grid;
+		grid-template-columns: @golden3 1fr auto;
+	}
+}
+
+.c-Position__Head {
+	@media print {
+		grid-column: 1 ~'/' -1;
+		display: grid; // TODO subgrid
+		grid-template-columns: @golden3 1fr auto;
+	}
+}
+
+.c-Position__Body {
+	@media print {
+		grid-column: 2 ~'/' -1;
+	}
+}
+
+.c-Position__Name,
+.c-Position__Org {
+	// unset xmeter,still-alive base
+	margin-bottom: unset;
+	font-weight: unset;
+	font-size: unset;
+	line-height: unset;
+	@media screen {
+		font-family: @g-fontfamily-base;
+	}
+	@media screen and (min-width: 60em) {
+		.h-Inline;
+	}
+}
+
+.c-Position__Dates,
+.c-Position__Place {
+	@media screen {
+		.h-Inline;
+	}
+	@media print {
+		margin-bottom: 0;
+	}
+}
+
+// The title of a job, e.g. a position held at an organization.
+/*h3*/.c-Position__Name {
+	font-weight: 600; // override still-alive h3 base
+	@media screen and (min-width: 60em) {
+		margin-right: 1rem;
+		@supports (margin-inline-end: 1rem) {
+			margin-right: unset;
+			margin-inline-end: 1rem;
+		}
+	}
+}
+
+// The name/url of an organization.
+.c-Position__Org {
+	font-style: italic;
+	@media screen and (min-width: 60em) {
+		.h-Clearfix;
+	}
+	@media print {
+		justify-self: end;
+	}
+}
+
+// Dates worked at each organization.
+.c-Position__Dates {
+	@media screen {
+		padding-right: 0.5rem;
+	}
+	@media print {
+		order: -1;
+	}
+}
+
+// The city or location of an organization.
+.c-Position__Place {
+	@media print {
+		display: none;
+	}
+}
