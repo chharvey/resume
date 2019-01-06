@@ -13,7 +13,7 @@ STATE_DATA.push(...[
 ])
 
 
-interface OptsTypeXCity { // TODO make this an options param
+interface OptsTypeXCity {
 	/** the value of the `[itemprop]` attribute to write */
 	itemprop?: string;
 	/**

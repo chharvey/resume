@@ -3,7 +3,7 @@ import * as path from 'path'
 import * as util from 'util'
 
 import * as Ajv from 'ajv'
-import { JSDOM } from 'jsdom'
+import * as jsdom from 'jsdom'
 
 import {xPersonFullname} from 'aria-patterns'
 import * as xjs from 'extrajs-dom'
@@ -106,8 +106,8 @@ async function instructions(document: Document, data: ResumePerson, opts: OptsTy
 		new xjs.HTMLUListElement(document.querySelector('main header address ul.c-Contact') as HTMLUListElement).populate(function (f, d) {
 			new xjs.HTMLAnchorElement(f.querySelector('.c-Contact__Link') as HTMLAnchorElement).href(d.href)
 			new xjs.Element(f.querySelector('.c-Contact__Icon') !).innerHTML(octicons[d.icon].toSVG({
-				width : octicons[d.icon].width  * 1.25, // NB{LINK} src/css/_c-Contact.less#L82 // `.c-Contact__Icon@--font-scale`
-				height: octicons[d.icon].height * 1.25, // NB{LINK} src/css/_c-Contact.less#L82 // `.c-Contact__Icon@--font-scale`
+				width : octicons[d.icon].width  * 1.25, // NB{LINK} src/css/_c-Contact.less#L85 // `.c-Contact__Icon@--font-scale`
+				height: octicons[d.icon].height * 1.25, // NB{LINK} src/css/_c-Contact.less#L85 // `.c-Contact__Icon@--font-scale`
 			}))
 			f.querySelector('.c-Contact__Link') !.setAttribute('itemprop', d.itemprop)
 			f.querySelector('.c-Contact__Text') !.textContent = d.text
@@ -186,7 +186,7 @@ async function instructions(document: Document, data: ResumePerson, opts: OptsTy
 
 	;(() => {
 		new xjs.Element(document.body).append(...(opts.scripts || []).map((script) =>
-			JSDOM.fragment(script).querySelector('script')
+			jsdom.JSDOM.fragment(script).querySelector('script')
 		))
 	})()
 }

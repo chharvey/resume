@@ -44,7 +44,7 @@ export interface JobPositionGroup extends sdo.ItemList {
 export interface Skill extends sdo.Rating {
 	name: string;
 	/** proficiency with this skill */
-	ratingValue: number; // TODO use extrajs-types/Fraction
+	ratingValue: number;
 	worstRating?: 0;
 	bestRating ?: 1;
 }
@@ -53,15 +53,21 @@ export interface JobPosition extends sdo.JobPosting {
 	identifier: string;
 	title: string;
 	hiringOrganization: sdo.Organization & {
-		'@type': string;
+		'@type': string; // TODO remove on schemaorg-jsd^0.14
 		name: string;
 	};
 	jobLocation: ResumeCity;
 	/** @override */
 	responsibilities?: string[];
-	/** the start date of the job position */
+	/**
+	 * The start date of the job position.
+	 * @format Date
+	 */
 	$start: string;
-	/** the end date of the job position */
+	/**
+	 * The end date of the job position.
+	 * @format Date
+	 */
 	$end?: string;
 }
 
@@ -77,7 +83,9 @@ export interface Degree {
 export interface Prodev extends sdo.Event {
 	'@type': string;
 	name: string;
+	/** @format Date */
 	startDate: string;
+	/** @format Date */
 	endDate: string;
 	location: ResumeCity;
 	/** the number of professional development hours */
