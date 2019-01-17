@@ -5,21 +5,13 @@ import * as util from 'util'
 import * as Ajv from 'ajv'
 import * as jsdom from 'jsdom'
 
+import { requireJSON, JSONSchemaObject, JSONLDObject } from '@chharvey/requirejson'
 import {xPersonFullname} from 'aria-patterns'
 import * as xjs from 'extrajs-dom'
-import {Processor} from 'template-processor'
-
 import octicons from '../octicons.d' // NB contributed: https://github.com/primer/octicons/pull/268
 const octicons: octicons = require('octicons')
-
 const sdo_jsd = require('schemaorg-jsd')
-const [META_SCHEMATA, SCHEMATA]: Promise<object[]>[] = [
-	sdo_jsd.getMetaSchemata(),
-	sdo_jsd.getSchemata(),
-]
-const {requireOther} = require('schemaorg-jsd/lib/requireOther.js')
-
-const RESUME_SCHEMA = requireOther(path.join(__dirname, '../../src/resume.jsd')) // NB relative to dist
+import {Processor} from 'template-processor'
 
 import {ResumePerson, JobPositionGroup, Skill, Prodev, Award} from '../interfaces.d'
 import xAward    from '../tpl/x-award.tpl'
@@ -28,6 +20,10 @@ import xPosition from '../tpl/x-position.tpl'
 import xProdev   from '../tpl/x-prodev.tpl'
 import xSkill    from '../tpl/x-skill.tpl'
 
+
+const META_SCHEMATA: Promise<JSONSchemaObject[]> = sdo_jsd.getMetaSchemata()
+const SCHEMATA: Promise<JSONSchemaObject[]> = sdo_jsd.getSchemata()
+const RESUME_SCHEMA: Promise<JSONLDObject> = requireJSON(path.join(__dirname, '../../src/resume.jsd')) as Promise<JSONLDObject> // NB relative to dist
 
 interface OptsTypeResume {
 	/**
@@ -192,10 +188,10 @@ async function instructions(document: Document, data: ResumePerson, opts: OptsTy
 	})()
 }
 
-export default async function (data: ResumePerson, opts?: OptsTypeResume): Promise<Document> {
+export default async function (data: ResumePerson|Promise<ResumePerson>, opts?: OptsTypeResume|Promise<OptsTypeResume>): Promise<Document> {
 	let ajv: Ajv.Ajv = new Ajv()
 	ajv.addMetaSchema(await META_SCHEMATA).addSchema(await SCHEMATA)
-	let is_data_valid: boolean = ajv.validate(RESUME_SCHEMA, data) as boolean
+	let is_data_valid: boolean = ajv.validate(await RESUME_SCHEMA, await data) as boolean
 	if (!is_data_valid) {
 		let e: TypeError & { filename?: string; details?: Ajv.ErrorObject } = new TypeError(ajv.errors ![0].message)
 		e.filename = 'resume.json'
@@ -204,6 +200,6 @@ export default async function (data: ResumePerson, opts?: OptsTypeResume): Promi
 		throw e
 	}
 	// return Processor.processAsync(doc, instructions, data, opts) // TODO on template-processor^2
-	await instructions(doc, data, opts || {})
+	await instructions(doc, await data, await opts || {})
 	return doc
 }

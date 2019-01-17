@@ -1,7 +1,6 @@
 {
-  "name": "resume",
-  "version": "1.0.0",
-  "private": true,
+  "name": "@chharvey/resume",
+  "version": "2.0.0",
   "description": "An HTML résumé generator using JSON-LD, Schema.org, and Typescript.",
   "main": "index.js",
   "scripts": {
@@ -39,6 +38,7 @@
     "xmeter": "^7.1.0-beta.0"
   },
   "dependencies": {
+    "@chharvey/requirejson": "^1.0.1",
     "ajv": "^6.6.1",
     "aria-patterns": "^2.0.0-alpha.0",
     "extrajs": "^0.17.0",

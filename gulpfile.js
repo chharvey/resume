@@ -11,9 +11,9 @@ const rename       = require('gulp-rename')
 const sourcemaps   = require('gulp-sourcemaps')
 const typescript   = require('gulp-typescript')
 // require('typescript') // DO NOT REMOVE … peerDependency of `gulp-typescript`
-
 const mkdirp = require('make-dir')
 
+const { requireJSON } = require('@chharvey/requirejson')
 const xjs = require('extrajs-dom')
 
 const tsconfig = require('./tsconfig.json')
@@ -66,22 +66,21 @@ function test_out() {
 }
 
 async function test_run() {
-	const {requireOther} = require('schemaorg-jsd/lib/requireOther.js')
 	const resume = require('./')
 
-	const DATA = requireOther('./test/src/sample-data.jsonld')
+	const DATA = requireJSON('./test/src/sample-data.jsonld')
 	const OPTS = {
 		scripts: [
 			`<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML,https://chharvey.github.io/chhlib/mathjax-localconfig.js"></script>`,
 		],
 	}
 
-	let xdocument = (await Promise.all([
-		new xjs.Document(await resume(DATA, OPTS)),
+	let doc = (await Promise.all([
+		resume(DATA, OPTS),
 		mkdirp('./test/out/'),
 	]))[0]
 
-	return util.promisify(fs.writeFile)(path.resolve(__dirname, './test/out/test.html'), xdocument.innerHTML(), 'utf8')
+	return util.promisify(fs.writeFile)(path.resolve(__dirname, './test/out/test.html'), new xjs.Document(doc).innerHTML(), 'utf8')
 }
 
 const test = gulp.series(test_out, test_run)
