@@ -1,5 +1,6 @@
 import * as fs from 'fs'
 import * as path from 'path'
+import * as url from 'url'
 import * as util from 'util'
 
 import * as Ajv from 'ajv'
@@ -21,15 +22,14 @@ import xProdev   from '../tpl/x-prodev.tpl'
 import xSkill    from '../tpl/x-skill.tpl'
 
 
+const VERSION: string = require('../../package.json').version
+
 const META_SCHEMATA: Promise<JSONSchemaObject[]> = sdo_jsd.getMetaSchemata()
 const SCHEMATA: Promise<JSONSchemaObject[]> = sdo_jsd.getSchemata()
 const RESUME_SCHEMA: Promise<JSONLDObject> = requireJSON(path.join(__dirname, '../../src/resume.jsd')) as Promise<JSONLDObject> // NB relative to dist
 
 interface OptsTypeResume {
-	/**
-	 * Base directory of this repository, relative to output file.
-	 * @default `./node_modules/resume/`
-	 */
+	/** @deprecated - do not use this property */
 	basedir?: string;
 	/** `innerHTML` of any `<script>` elements to append to the end of `<body>`. */
 	scripts?: string[];
@@ -58,7 +58,7 @@ async function instructions(document: Document, data: ResumePerson, opts: OptsTy
 			;(document.querySelectorAll('link[rel~="stylesheet"][data-local]') as NodeListOf<HTMLLinkElement>).forEach((link) => {
 				let matches: RegExpMatchArray|null = link.href.match(/[\w\-]*\.css/)
 				if (matches === null) throw new ReferenceError(`No regex match found in \`${link.href}\`.`)
-				link.href = path.join(opts.basedir || `./node_modules/resume/`, `./dist/css/`, matches[0])
+				link.href = url.resolve(`https://cdn.jsdelivr.net/npm/@chharvey/resume@${VERSION}/`, path.join('./dist/css/', matches[0]))
 			})
 		}
 	})()
