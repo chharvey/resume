@@ -1,4 +1,5 @@
-import * as sdo from 'schemaorg-jsd/dist/schemaorg' // TODO use an index file
+import { JSONLDObject } from '@chharvey/requirejson'
+import * as sdo from 'schemaorg-jsd'
 
 
 export interface ResumePerson extends sdo.Person {
@@ -71,7 +72,7 @@ export interface JobPosition extends sdo.JobPosting {
 	$end?: string;
 }
 
-export interface Degree {
+export interface Degree extends JSONLDObject {
 	/** year the degree was earned. if not yet earned, a negative integer */
 	year: number; // bigint
 	/** grade-point-average */
@@ -92,7 +93,7 @@ export interface Prodev extends sdo.Event {
 	$pdh: number;
 }
 
-export interface Award {
+export interface Award extends JSONLDObject {
 	/** date(s) relevant to the award */
 	dates: string;
 	/** custom HTML string defining this award */

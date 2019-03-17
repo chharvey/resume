@@ -200,6 +200,6 @@ export default async function (data: ResumePerson|Promise<ResumePerson>, opts?: 
 		throw e
 	}
 	// return Processor.processAsync(doc, instructions, data, opts) // TODO on template-processor^2
-	await instructions(doc, await data, await opts || {})
+	await instructions(doc/*.cloneNode(true) as Document*/, await data, await opts || {}) // BUG https://github.com/jsdom/jsdom/issues/2497
 	return doc
 }
