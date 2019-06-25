@@ -31,5 +31,5 @@ function instructions(frag: DocumentFragment, data: Skill): void {
  * Washington, DC 20006
  * ```
  */
-const xSkill: Processor<Skill, object> = new Processor(template, instructions)
+const xSkill: Processor<Skill> = new Processor(template, instructions)
 export default xSkill

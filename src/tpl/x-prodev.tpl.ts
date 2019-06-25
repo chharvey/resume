@@ -55,5 +55,5 @@ function instructions(frag: DocumentFragment, data: Prodev): void {
  * Washington, DC 20006
  * ```
  */
-const xProdev: Processor<Prodev, object> = new Processor(template, instructions)
+const xProdev: Processor<Prodev> = new Processor(template, instructions)
 export default xProdev

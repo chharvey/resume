@@ -55,5 +55,5 @@ function instructions(frag: DocumentFragment, data: JobPosition): void {
  * Washington, DC 20006
  * ```
  */
-const xPosition: Processor<JobPosition, object> = new Processor(template, instructions)
+const xPosition: Processor<JobPosition> = new Processor(template, instructions)
 export default xPosition

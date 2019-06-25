@@ -27,5 +27,5 @@ function instructions(frag: DocumentFragment, data: Award): void {
  * Washington, DC 20006
  * ```
  */
-const xAward: Processor<Award, object> = new Processor(template, instructions)
+const xAward: Processor<Award> = new Processor(template, instructions)
 export default xAward

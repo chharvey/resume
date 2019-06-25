@@ -28,5 +28,5 @@ function instructions(frag: DocumentFragment, data: Degree): void {
  * Washington, DC 20006
  * ```
  */
-const xDegree: Processor<Degree, object> = new Processor(template, instructions)
+const xDegree: Processor<Degree> = new Processor(template, instructions)
 export default xDegree
