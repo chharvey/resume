@@ -37,7 +37,7 @@ interface OptsTypeResume {
 
 const doc: Document = xjs.Document.fromFileSync(path.join(__dirname, '../../src/doc/resume.doc.html')).importLinks(__dirname).node // NB relative to dist
 
-async function instructions(document: Document, data: ResumePerson, opts: OptsTypeResume): Promise<void> {
+const instructions = async (document: Document, data: ResumePerson, opts: OptsTypeResume): Promise<void> => {
 	/**
 	 * Adjust local stylesheet hrefs.
 	 */
@@ -99,7 +99,7 @@ async function instructions(document: Document, data: ResumePerson, opts: OptsTy
 				text: data.$contactText && data.$contactText.url || data.url || null,
 			},
 		]
-		new xjs.HTMLUListElement(document.querySelector('main header address ul.c-Contact') as HTMLUListElement).populate(function (f, d) {
+		new xjs.HTMLUListElement(document.querySelector('main header address ul.c-Contact') as HTMLUListElement).populate((f, d) => {
 			new xjs.HTMLAnchorElement(f.querySelector('.c-Contact__Link') as HTMLAnchorElement).href(d.href)
 			new xjs.Element(f.querySelector('.c-Contact__Icon') !).innerHTML(octicons[d.icon].toSVG({
 				width : octicons[d.icon].width  * 1.25, // NB{LINK} src/css/_c-Contact.less#L85 // `.c-Contact__Icon@--font-scale`
@@ -116,7 +116,7 @@ async function instructions(document: Document, data: ResumePerson, opts: OptsTy
 		...(data.$degrees || []).map((item) => xDegree.process(item))
 	)
 
-	new xjs.HTMLUListElement(document.querySelector('.o-Grid--skillGroups') as HTMLUListElement).populate(function (f, d) {
+	new xjs.HTMLUListElement(document.querySelector('.o-Grid--skillGroups') as HTMLUListElement).populate((f, d) => {
 		f.querySelector('.o-List__Item'    ) !.id          = `${d.identifier}-item` // TODO fix this after fixing hidden-ness
 		f.querySelector('.c-Position'      ) !.id          = d.identifier
 		f.querySelector('.c-Position__Name') !.textContent = d.name
@@ -125,16 +125,16 @@ async function instructions(document: Document, data: ResumePerson, opts: OptsTy
 		)
 	}, data.$skills || [])
 
-	new xjs.HTMLUListElement(document.querySelector('#skills .o-List--print') as HTMLUListElement).populate(function (f, d) {
+	new xjs.HTMLUListElement(document.querySelector('#skills .o-List--print') as HTMLUListElement).populate((f, d) => {
 		f.querySelector('li') !.innerHTML = d.innerHTML
 	}, [...document.querySelector('.o-Grid--skillGroups') !.querySelectorAll('dt.o-Grid__Item')])
 
 	;(() => {
 		let templateEl: HTMLTemplateElement = document.querySelector('template#experience') as HTMLTemplateElement
-		const xPositionGroup: Processor<JobPositionGroup, object> = new Processor(templateEl, function (frag, datagroup) {
+		const xPositionGroup: Processor<JobPositionGroup, object> = new Processor(templateEl, (frag, datagroup) => {
 			frag.querySelector('.o-Grid__Item--exp') !.id = datagroup.identifier
 			frag.querySelector('.c-ExpHn') !.textContent = datagroup.name
-			new xjs.HTMLUListElement(frag.querySelector('ul.o-List') as HTMLUListElement).populate(function (f, d) {
+			new xjs.HTMLUListElement(frag.querySelector('ul.o-List') as HTMLUListElement).populate((f, d) => {
 				new xjs.HTMLLIElement(f.querySelector('li') !).empty().append(xPosition.process(d))
 			}, datagroup.itemListElement)
 		})
@@ -143,14 +143,14 @@ async function instructions(document: Document, data: ResumePerson, opts: OptsTy
 
 	;(() => {
 		let templateEl: HTMLTemplateElement = document.querySelector('template#achievements') as HTMLTemplateElement
-		function achievementGroupProcessorGenerator<T>(processor: Processor<T, object>): Processor<{
+		const achievementGroupProcessorGenerator = <T>(processor: Processor<T, object>): Processor<{
 			name           : string;
 			identifier     : string;
 			itemListElement: T[];
 		}, {
 			classes?: string;
-		}> {
-			return new Processor(templateEl, function (frag, datagroup, optsgroup) {
+		}> => {
+			return new Processor(templateEl, (frag, datagroup, optsgroup) => {
 				frag.querySelector('.o-Grid__Item--exp') !.id = datagroup.identifier
 				frag.querySelector('.c-ExpHn') !.textContent = datagroup.name
 				new xjs.HTMLDListElement(frag.querySelector('.o-ListAchv') as HTMLDListElement).empty()
@@ -188,7 +188,7 @@ async function instructions(document: Document, data: ResumePerson, opts: OptsTy
 	})()
 }
 
-export default async function (data: ResumePerson|Promise<ResumePerson>, opts?: OptsTypeResume|Promise<OptsTypeResume>): Promise<Document> {
+export default async (data: ResumePerson|Promise<ResumePerson>, opts?: OptsTypeResume|Promise<OptsTypeResume>): Promise<Document> => {
 	let ajv: Ajv.Ajv = new Ajv()
 	ajv.addMetaSchema(await META_SCHEMATA).addSchema(await SCHEMATA)
 	let is_data_valid: boolean = ajv.validate(await RESUME_SCHEMA, await data) as boolean

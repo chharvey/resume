@@ -10,7 +10,7 @@ const template = xjs.HTMLTemplateElement
 	.fromFileSync(path.join(__dirname, '../../src/tpl/x-award.tpl.html')) // NB relative to dist
 	.node
 
-function instructions(frag: DocumentFragment, data: Award): void {
+const instructions = (frag: DocumentFragment, data: Award): void => {
 	frag.querySelector('slot[name="text"]' ) !.innerHTML = data.text
 	frag.querySelector('slot[name="dates"]') !.innerHTML = data.dates
 

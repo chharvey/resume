@@ -12,7 +12,7 @@ const template = xjs.HTMLTemplateElement
 	.fromFileSync(path.join(__dirname, '../../src/tpl/x-prodev.tpl.html')) // NB relative to dist
 	.node
 
-function instructions(frag: DocumentFragment, data: Prodev): void {
+const instructions = (frag: DocumentFragment, data: Prodev): void => {
 	let date_start = new Date(data.startDate)
 	let date_end   = new Date(data.endDate  )
 	let pdh = data.$pdh
@@ -25,7 +25,7 @@ function instructions(frag: DocumentFragment, data: Prodev): void {
 		.dateTime(`PT${pdh}H`)
 		.textContent(`${pdh} hr`)
 
-	frag.querySelectorAll('[itemprop~="endDate"]').forEach(function (time) {
+	frag.querySelectorAll('[itemprop~="endDate"]').forEach((time) => {
 		new xjs.HTMLTimeElement(time as HTMLTimeElement)
 			.dateTime(date_end)
 			.textContent(xjs_Date.format(date_end, 'j M Y'))

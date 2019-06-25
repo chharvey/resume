@@ -12,7 +12,7 @@ const template = xjs.HTMLTemplateElement
 	.fromFileSync(path.join(__dirname, '../../src/tpl/x-position.tpl.html')) // NB relative to dist
 	.node
 
-function instructions(frag: DocumentFragment, data: JobPosition): void {
+const instructions = (frag: DocumentFragment, data: JobPosition): void => {
 	let date_start  : Date      = new Date(data.$start)
 	let date_end    : Date|null = (data.$end) ? new Date(data.$end) : null
 	let descriptions: string[]  = data.responsibilities || []
@@ -41,7 +41,7 @@ function instructions(frag: DocumentFragment, data: JobPosition): void {
 		.append(xCity.process(data.jobLocation, { itemprop: 'jobLocation' }))
 		.trimInner()
 
-	new xjs.HTMLUListElement(frag.querySelector('.c-Position__Body') as HTMLUListElement).populate(function (f, d) {
+	new xjs.HTMLUListElement(frag.querySelector('.c-Position__Body') as HTMLUListElement).populate((f, d) => {
 		f.querySelector('li') !.innerHTML = d
 	}, descriptions)
 

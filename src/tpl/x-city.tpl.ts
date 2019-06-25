@@ -28,7 +28,7 @@ const template = xjs.HTMLTemplateElement
 	.fromFileSync(path.join(__dirname, '../../src/tpl/x-city.tpl.html')) // NB relative to dist
 	.node
 
-function instructions(frag: DocumentFragment, data: ResumeCity, opts: OptsTypeXCity): void {
+const instructions = (frag: DocumentFragment, data: ResumeCity, opts: OptsTypeXCity): void => {
 	new xjs.Element(frag.querySelector('[itemtype="http://schema.org/City"]') !)
 		.attr('itemprop', opts.itemprop || null)
 	new xjs.Element(frag.querySelector('slot[name="address"]') !).empty()
