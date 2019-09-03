@@ -35,8 +35,8 @@ function instructions(frag: DocumentFragment, data: ResumeCity, opts: OptsTypeXC
 		.append(xAddress.process(data.address, { regionName: opts.regionName }))
 
 	frag.querySelector('[itemprop="addressLocality"]') !.textContent = data.address.addressLocality
-	;(frag.querySelector('[itemprop="latitude"]' ) as HTMLMetaElement).content = `${data.geo.latitude}`
-	;(frag.querySelector('[itemprop="longitude"]') as HTMLMetaElement).content = `${data.geo.longitude}`
+	new xjs.HTMLMetaElement(frag.querySelector('[itemprop="latitude"]' ) as HTMLMetaElement).content(`${data.geo.latitude }`)
+	new xjs.HTMLMetaElement(frag.querySelector('[itemprop="longitude"]') as HTMLMetaElement).content(`${data.geo.longitude}`)
 }
 
 /**

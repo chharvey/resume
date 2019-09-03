@@ -15,7 +15,6 @@ const template = xjs.HTMLTemplateElement
 function instructions(frag: DocumentFragment, data: JobPosition): void {
 	let date_start  : Date      = new Date(data.$start)
 	let date_end    : Date|null = (data.$end) ? new Date(data.$end) : null
-	let descriptions: string[]  = data.responsibilities || []
 
 	frag.querySelector('.c-Position'       ) !.id        = data.identifier
 	frag.querySelector('[itemprop="title"]') !.innerHTML = data.title
@@ -25,7 +24,7 @@ function instructions(frag: DocumentFragment, data: JobPosition): void {
 		.href(data.hiringOrganization.url || null)
 
 	new xjs.HTMLTimeElement(frag.querySelectorAll('.c-Position__Dates > time')[0] as HTMLTimeElement)
-		.dateTime(date_start.toISOString())
+		.dateTime(date_start)
 		.textContent(xjs_Date.format(date_start, 'M Y'))
 	if (date_end) {
 		new xjs.HTMLTimeElement(frag.querySelectorAll('.c-Position__Dates > time')[1] as HTMLTimeElement)
@@ -33,7 +32,8 @@ function instructions(frag: DocumentFragment, data: JobPosition): void {
 			.textContent(xjs_Date.format(date_end, 'M Y'))
 		frag.querySelectorAll('.c-Position__Dates > time')[2].remove()
 	} else {
-		;(frag.querySelectorAll('.c-Position__Dates > time')[2] as HTMLTimeElement).dateTime = new Date().toISOString()
+		new xjs.HTMLTimeElement(frag.querySelectorAll('.c-Position__Dates > time')[2] as HTMLTimeElement)
+			.dateTime(new Date())
 		frag.querySelectorAll('.c-Position__Dates > time')[1].remove()
 	}
 
@@ -43,7 +43,7 @@ function instructions(frag: DocumentFragment, data: JobPosition): void {
 
 	new xjs.HTMLUListElement(frag.querySelector('.c-Position__Body') as HTMLUListElement).populate(function (f, d) {
 		f.querySelector('li') !.innerHTML = d
-	}, descriptions)
+	}, data.responsibilities || [])
 
 	new xjs.Element(frag.querySelector('.c-Position__Dates') !).trimInner()
 }
