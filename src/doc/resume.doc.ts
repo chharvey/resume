@@ -6,12 +6,12 @@ import * as util from 'util'
 import * as Ajv from 'ajv'
 import * as jsdom from 'jsdom'
 
-import { requireJSON, JSONSchemaObject, JSONLDObject } from '@chharvey/requirejson'
+import { requireJSON, JSONLDObject } from '@chharvey/requirejson'
 import {xPersonFullname} from 'aria-patterns'
 import * as xjs from 'extrajs-dom'
 import octicons from '../octicons.d' // NB contributed: https://github.com/primer/octicons/pull/268
 const octicons: octicons = require('octicons')
-const sdo_jsd = require('schemaorg-jsd')
+import * as sdo_jsd from 'schemaorg-jsd'
 import {Processor} from 'template-processor'
 
 import {ResumePerson, JobPositionGroup, Skill, Prodev, Award} from '../interfaces.d'
@@ -24,8 +24,6 @@ import xSkill    from '../tpl/x-skill.tpl'
 
 const VERSION: string = require('../../package.json').version
 
-const META_SCHEMATA: Promise<JSONSchemaObject[]> = sdo_jsd.getMetaSchemata()
-const SCHEMATA: Promise<JSONSchemaObject[]> = sdo_jsd.getSchemata()
 const RESUME_SCHEMA: Promise<JSONLDObject> = requireJSON(path.join(__dirname, '../../src/resume.jsd')) as Promise<JSONLDObject> // NB relative to dist
 
 interface OptsTypeResume {
@@ -190,7 +188,10 @@ const instructions = async (document: Document, data: ResumePerson, opts: OptsTy
 
 export default async (data: ResumePerson|Promise<ResumePerson>, opts?: OptsTypeResume|Promise<OptsTypeResume>): Promise<Document> => {
 	let ajv: Ajv.Ajv = new Ajv()
-	ajv.addMetaSchema(await META_SCHEMATA).addSchema(await SCHEMATA)
+	ajv
+		.addMetaSchema(await sdo_jsd.META_SCHEMATA)
+		.addSchema(await sdo_jsd.JSONLD_SCHEMA)
+		.addSchema(await sdo_jsd.SCHEMATA)
 	let is_data_valid: boolean = ajv.validate(await RESUME_SCHEMA, await data) as boolean
 	if (!is_data_valid) {
 		let e: TypeError & { filename?: string; details?: Ajv.ErrorObject } = new TypeError(ajv.errors ![0].message)
