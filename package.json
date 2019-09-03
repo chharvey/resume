@@ -25,7 +25,7 @@
   "homepage": "https://github.com/chharvey/resume#readme",
   "devDependencies": {
     "gulp": "^4.0.0",
-    "gulp-autoprefixer": "^6.0.0",
+    "gulp-autoprefixer": "^7.0.0",
     "gulp-clean-css": "^4.0.0",
     "gulp-inject-string": "^1.1.2",
     "gulp-less": "^4.0.1",
@@ -34,14 +34,14 @@
     "gulp-typescript": "^5.0.0",
     "make-dir": "^2.1.0",
     "still-alive": "github:chharvey/still-alive#v1.4.3",
-    "typescript": "~3.3.0",
+    "typescript": "~3.4.0",
     "xmeter": "^7.1.0-beta.0"
   },
   "dependencies": {
     "@chharvey/requirejson": "^1.0.1",
     "ajv": "^6.6.1",
     "aria-patterns": "^2.0.0-alpha.0",
-    "extrajs": "^0.18.1",
+    "extrajs": "^0.19.0",
     "extrajs-dom": "^5.0.0",
     "extrajs-geo": "^0.1.0",
     "jsdom": "^12.0.0",
