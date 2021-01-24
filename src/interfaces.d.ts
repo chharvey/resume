@@ -1,4 +1,4 @@
-import { JSONLDObject } from '@chharvey/requirejson'
+import {NodeObject} from 'jsonld';
 import * as sdo from 'schemaorg-jsd'
 
 
@@ -72,7 +72,7 @@ export interface JobPosition extends sdo.JobPosting {
 	$end?: string;
 }
 
-export interface Degree extends JSONLDObject {
+export interface Degree extends NodeObject {
 	/** year the degree was earned. if not yet earned, a negative integer */
 	year: number; // bigint
 	/** grade-point-average */
@@ -93,7 +93,7 @@ export interface Prodev extends sdo.Event {
 	$pdh: number;
 }
 
-export interface Award extends JSONLDObject {
+export interface Award extends NodeObject {
 	/** date(s) relevant to the award */
 	dates: string;
 	/** custom HTML string defining this award */

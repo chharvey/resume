@@ -3,10 +3,11 @@ import * as path from 'path'
 import * as url from 'url'
 import * as util from 'util'
 
+import {NodeObject} from 'jsonld';
 import * as Ajv from 'ajv'
 import * as jsdom from 'jsdom'
 
-import { requireJSON, JSONLDObject } from '@chharvey/requirejson'
+import {requireJSON} from '@chharvey/requirejson';
 import {xPersonFullname} from 'aria-patterns'
 import * as xjs from 'extrajs-dom'
 import octicons from '../octicons.d' // NB contributed: https://github.com/primer/octicons/pull/268
@@ -24,7 +25,7 @@ import xSkill    from '../tpl/x-skill.tpl'
 
 const VERSION: string = require('../../package.json').version
 
-const RESUME_SCHEMA: Promise<JSONLDObject> = requireJSON(path.join(__dirname, '../../src/resume.jsd')) as Promise<JSONLDObject> // NB relative to dist
+const RESUME_SCHEMA: Promise<NodeObject> = requireJSON(path.join(__dirname, '../../src/resume.jsd')) as Promise<NodeObject>; // NB relative to dist
 
 interface OptsTypeResume {
 	/** @deprecated - do not use this property */
