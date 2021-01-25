@@ -36,13 +36,29 @@ interface OptsTypeResume {
 	scripts?: string[];
 }
 
-const doc: Document = xjs.Document.fromFileSync(path.join(__dirname, '../../src/doc/resume.doc.html')).importLinks(__dirname).node // NB relative to dist
+const doc: Promise<Document> = xjs.Document.fromFile(path.join(__dirname, '../../src/doc/resume.doc.html'))
+	.then((doc) => doc.importLinks(__dirname).node) // NB relative to dist
 
-const instructions = async (document: Document, data: ResumePerson, opts: OptsTypeResume): Promise<void> => {
-	/**
-	 * Adjust local stylesheet hrefs.
-	 */
-	await (async () => {
+export default async (data: ResumePerson|Promise<ResumePerson>, opts?: OptsTypeResume|Promise<OptsTypeResume>): Promise<Document> => {
+	const ajv: Ajv = new Ajv({
+		strict: false,
+	});
+	ajv
+		.addMetaSchema(await sdo_jsd.META_SCHEMATA)
+		.addSchema(await sdo_jsd.JSONLD_SCHEMA)
+		.addSchema(await sdo_jsd.SCHEMATA)
+	let is_data_valid: boolean = ajv.validate(await RESUME_SCHEMA, await data) as boolean
+	if (!is_data_valid) {
+		const e: TypeError & {filename?: string; details?: AjvErrorObject} = new TypeError(ajv.errors![0].message);
+		e.filename = 'resume.json'
+		e.details = ajv.errors ![0]
+		console.error(e)
+		throw e
+	}
+	return Processor.processAsync(await doc, async (document, data, opts) => {
+		/**
+		 * Adjust local stylesheet hrefs.
+		 */
 		/**
 		 * Are we using a development environment? (Is a `.git` directory present?)
 		 *
@@ -62,25 +78,26 @@ const instructions = async (document: Document, data: ResumePerson, opts: OptsTy
 				link.href = url.resolve(`https://cdn.jsdelivr.net/npm/@chharvey/resume@${VERSION}/`, path.join('./dist/css/', matches[0]))
 			})
 		}
-	})()
 
-	new xjs.Element(document.querySelector('main header [itemprop="name"]') !).empty().append(
-		xPersonFullname.process({
-			familyName      : data.familyName      || '',
-			givenName       : data.givenName       || '',
-			additionalName  : data.additionalName  || '',
-			honorificPrefix : data.honorificPrefix || '',
-			honorificSuffix : data.honorificSuffix || '',
-		})
-	)
+		new xjs.Element(document.querySelector('main header [itemprop="name"]') !).empty().append(
+			xPersonFullname.process({
+				familyName      : data.familyName      || '',
+				givenName       : data.givenName       || '',
+				additionalName  : data.additionalName  || '',
+				honorificPrefix : data.honorificPrefix || '',
+				honorificSuffix : data.honorificSuffix || '',
+			})
+		)
 
-	;(() => {
-		let dataset: {
-			itemprop : string;
-			icon     : keyof octicons;
-			href     : string|null;
-			text     : string|null;
-		}[] = [
+		new xjs.HTMLUListElement(document.querySelector('main header address ul.c-Contact') as HTMLUListElement).populate((f, d) => {
+			new xjs.HTMLAnchorElement(f.querySelector('.c-Contact__Link') as HTMLAnchorElement).href(d.href)
+			new xjs.Element(f.querySelector('.c-Contact__Icon')!).node.innerHTML = octicons[d.icon].toSVG({
+				width : octicons[d.icon].width  * 1.25, // NB{LINK} src/css/_c-Contact.less#L85 // `.c-Contact__Icon@--font-scale`
+				height: octicons[d.icon].height * 1.25, // NB{LINK} src/css/_c-Contact.less#L85 // `.c-Contact__Icon@--font-scale`
+			});
+			f.querySelector('.c-Contact__Link') !.setAttribute('itemprop', d.itemprop)
+			f.querySelector('.c-Contact__Text') !.textContent = d.text
+		}, [
 			{
 				itemprop: 'telephone',
 				icon: 'device-mobile',
@@ -99,59 +116,51 @@ const instructions = async (document: Document, data: ResumePerson, opts: OptsTy
 				href: data.url || null,
 				text: data.$contactText && data.$contactText.url || data.url || null,
 			},
-		]
-		new xjs.HTMLUListElement(document.querySelector('main header address ul.c-Contact') as HTMLUListElement).populate((f, d) => {
-			new xjs.HTMLAnchorElement(f.querySelector('.c-Contact__Link') as HTMLAnchorElement).href(d.href)
-			new xjs.Element(f.querySelector('.c-Contact__Icon')!).node.innerHTML = octicons[d.icon].toSVG({
-				width : octicons[d.icon].width  * 1.25, // NB{LINK} src/css/_c-Contact.less#L85 // `.c-Contact__Icon@--font-scale`
-				height: octicons[d.icon].height * 1.25, // NB{LINK} src/css/_c-Contact.less#L85 // `.c-Contact__Icon@--font-scale`
-			});
-			f.querySelector('.c-Contact__Link') !.setAttribute('itemprop', d.itemprop)
-			f.querySelector('.c-Contact__Text') !.textContent = d.text
-		}, dataset)
-	})()
+		] as {
+			itemprop: string;
+			icon:     keyof octicons;
+			href:     string | null;
+			text:     string | null;
+		}[])
 
-	document.querySelector('.c-Tagline[itemprop="description"]') !.textContent = data.description || ''
+		document.querySelector('.c-Tagline[itemprop="description"]') !.textContent = data.description || ''
 
-	new xjs.Element(document.querySelector('#edu .o-ListAchv') !).empty().append(
-		...(data.$degrees || []).map((item) => xDegree.process(item))
-	)
-
-	new xjs.HTMLUListElement(document.querySelector('.o-Grid--skillGroups') as HTMLUListElement).populate((f, d) => {
-		f.querySelector('.o-List__Item'    ) !.id          = `${d.identifier}-item` // TODO fix this after fixing hidden-ness
-		f.querySelector('.c-Position'      ) !.id          = d.identifier
-		f.querySelector('.c-Position__Name') !.textContent = d.name
-		new xjs.Element(f.querySelector('.o-Grid--skill') !).empty().append(
-			...d.itemListElement.map((item: Skill) => xSkill.process(item))
+		new xjs.Element(document.querySelector('#edu .o-ListAchv') !).empty().append(
+			...(data.$degrees || []).map((item) => xDegree.process(item))
 		)
-	}, data.$skills || [])
 
-	new xjs.HTMLUListElement(document.querySelector('#skills .o-List--print') as HTMLUListElement).populate((f, d) => {
-		f.querySelector('li') !.innerHTML = d.innerHTML
-	}, [...document.querySelector('.o-Grid--skillGroups') !.querySelectorAll('dt.o-Grid__Item')])
+		new xjs.HTMLUListElement(document.querySelector('.o-Grid--skillGroups') as HTMLUListElement).populate((f, d) => {
+			f.querySelector('.o-List__Item'    ) !.id          = `${d.identifier}-item` // TODO fix this after fixing hidden-ness
+			f.querySelector('.c-Position'      ) !.id          = d.identifier
+			f.querySelector('.c-Position__Name') !.textContent = d.name
+			new xjs.Element(f.querySelector('.o-Grid--skill') !).empty().append(
+				...d.itemListElement.map((item: Skill) => xSkill.process(item))
+			)
+		}, data.$skills || [])
 
-	;(() => {
-		let templateEl: HTMLTemplateElement = document.querySelector('template#experience') as HTMLTemplateElement
-		const xPositionGroup: Processor<JobPositionGroup, object> = new Processor(templateEl, (frag, datagroup) => {
+		new xjs.HTMLUListElement(document.querySelector('#skills .o-List--print') as HTMLUListElement).populate((f, d) => {
+			f.querySelector('li') !.innerHTML = d.innerHTML
+		}, [...document.querySelector('.o-Grid--skillGroups') !.querySelectorAll('dt.o-Grid__Item')])
+
+		const templateElExp: HTMLTemplateElement = document.querySelector('template#experience') as HTMLTemplateElement
+		const xPositionGroup: Processor<JobPositionGroup, object> = new Processor(templateElExp, (frag, datagroup) => {
 			frag.querySelector('.o-Grid__Item--exp') !.id = datagroup.identifier
 			frag.querySelector('.c-ExpHn') !.textContent = datagroup.name
 			new xjs.HTMLUListElement(frag.querySelector('ul.o-List') as HTMLUListElement).populate((f, d) => {
 				new xjs.HTMLLIElement(f.querySelector('li') !).empty().append(xPosition.process(d))
 			}, datagroup.itemListElement)
 		})
-		templateEl.after(...(data.$positions || []).map((group) => xPositionGroup.process(group)))
-	})()
+		templateElExp.after(...(data.$positions || []).map((group) => xPositionGroup.process(group)))
 
-	;(() => {
-		let templateEl: HTMLTemplateElement = document.querySelector('template#achievements') as HTMLTemplateElement
-		const achievementGroupProcessorGenerator = <T>(processor: Processor<T, object>): Processor<{
+		const templateElAch: HTMLTemplateElement = document.querySelector('template#achievements') as HTMLTemplateElement
+		function achievementGroupProcessorGenerator<T>(processor: Processor<T, object>): Processor<{
 			name           : string;
 			identifier     : string;
 			itemListElement: T[];
 		}, {
 			classes?: string;
-		}> => {
-			return new Processor(templateEl, (frag, datagroup, optsgroup) => {
+		}> {
+			return new Processor(templateElAch, (frag, datagroup, optsgroup) => {
 				frag.querySelector('.o-Grid__Item--exp') !.id = datagroup.identifier
 				frag.querySelector('.c-ExpHn') !.textContent = datagroup.name
 				new xjs.HTMLDListElement(frag.querySelector('.o-ListAchv') as HTMLDListElement).empty()
@@ -159,7 +168,7 @@ const instructions = async (document: Document, data: ResumePerson, opts: OptsTy
 					.append(...datagroup.itemListElement.map((item) => processor.process(item)))
 			})
 		}
-		templateEl.after(
+		templateElAch.after(
 			...[
 				achievementGroupProcessorGenerator<Prodev>(xProdev).process({
 					name           : 'Profes­sional Dev­elopment', // NOTE invisible soft hyphens here! // `Profes&shy;sional Dev&shy;elopment`
@@ -180,30 +189,9 @@ const instructions = async (document: Document, data: ResumePerson, opts: OptsTy
 				}),
 			]
 		)
-	})()
 
-	;(() => {
 		new xjs.Element(document.body).append(...(opts.scripts || []).map((script) =>
 			jsdom.JSDOM.fragment(script).querySelector('script')
 		))
-	})()
-}
-
-export default async (data: ResumePerson|Promise<ResumePerson>, opts?: OptsTypeResume|Promise<OptsTypeResume>): Promise<Document> => {
-	const ajv: Ajv = new Ajv({
-		strict: false,
-	});
-	ajv
-		.addMetaSchema(await sdo_jsd.META_SCHEMATA)
-		.addSchema(await sdo_jsd.JSONLD_SCHEMA)
-		.addSchema(await sdo_jsd.SCHEMATA)
-	let is_data_valid: boolean = ajv.validate(await RESUME_SCHEMA, await data) as boolean
-	if (!is_data_valid) {
-		const e: TypeError & {filename?: string; details?: AjvErrorObject} = new TypeError(ajv.errors![0].message);
-		e.filename = 'resume.json'
-		e.details = ajv.errors ![0]
-		console.error(e)
-		throw e
-	}
-	return Processor.processAsync(doc, instructions, data, opts);
+	}, data, opts);
 }

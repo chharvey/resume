@@ -24,21 +24,6 @@ interface OptsTypeXCity {
 	regionName?: boolean|string;
 }
 
-const template = xjs.HTMLTemplateElement
-	.fromFileSync(path.join(__dirname, '../../src/tpl/x-city.tpl.html')) // NB relative to dist
-	.node
-
-const instructions = (frag: DocumentFragment, data: ResumeCity, opts: OptsTypeXCity): void => {
-	new xjs.Element(frag.querySelector('[itemtype="http://schema.org/City"]') !)
-		.attr('itemprop', opts.itemprop || null)
-	new xjs.Element(frag.querySelector('slot[name="address"]') !).empty()
-		.append(xAddress.process(data.address as any /* FIXME update aria-patterns */, { regionName: opts.regionName }))
-
-	frag.querySelector('[itemprop="addressLocality"]') !.textContent = data.address.addressLocality
-	;(frag.querySelector('[itemprop="latitude"]' ) as HTMLMetaElement).content = `${data.geo.latitude}`
-	;(frag.querySelector('[itemprop="longitude"]') as HTMLMetaElement).content = `${data.geo.longitude}`
-}
-
 /**
  * Template for processing a postal address, in the format:
  * ```
@@ -46,5 +31,17 @@ const instructions = (frag: DocumentFragment, data: ResumeCity, opts: OptsTypeXC
  * Washington, DC 20006
  * ```
  */
-const xCity: Processor<ResumeCity, OptsTypeXCity> = new Processor(template, instructions)
+const xCity: Processor<ResumeCity, OptsTypeXCity> = new Processor(
+	xjs.HTMLTemplateElement.fromFileSync(path.join(__dirname, '../../src/tpl/x-city.tpl.html')).node, // NB relative to dist
+	(frag, data, opts) => {
+		new xjs.Element(frag.querySelector('[itemtype="http://schema.org/City"]') !)
+			.attr('itemprop', opts.itemprop || null)
+		new xjs.Element(frag.querySelector('slot[name="address"]') !).empty()
+			.append(xAddress.process(data.address as any /* FIXME update aria-patterns */, { regionName: opts.regionName }))
+
+		frag.querySelector('[itemprop="addressLocality"]') !.textContent = data.address.addressLocality
+		;(frag.querySelector('[itemprop="latitude"]' ) as HTMLMetaElement).content = `${data.geo.latitude}`
+		;(frag.querySelector('[itemprop="longitude"]') as HTMLMetaElement).content = `${data.geo.longitude}`
+	},
+);
 export default xCity
