@@ -32,7 +32,7 @@ const instructions = (frag: DocumentFragment, data: ResumeCity, opts: OptsTypeXC
 	new xjs.Element(frag.querySelector('[itemtype="http://schema.org/City"]') !)
 		.attr('itemprop', opts.itemprop || null)
 	new xjs.Element(frag.querySelector('slot[name="address"]') !).empty()
-		.append(xAddress.process(data.address, { regionName: opts.regionName }))
+		.append(xAddress.process(data.address as any /* FIXME update aria-patterns */, { regionName: opts.regionName }))
 
 	frag.querySelector('[itemprop="addressLocality"]') !.textContent = data.address.addressLocality
 	;(frag.querySelector('[itemprop="latitude"]' ) as HTMLMetaElement).content = `${data.geo.latitude}`

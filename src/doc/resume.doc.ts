@@ -102,10 +102,10 @@ const instructions = async (document: Document, data: ResumePerson, opts: OptsTy
 		]
 		new xjs.HTMLUListElement(document.querySelector('main header address ul.c-Contact') as HTMLUListElement).populate((f, d) => {
 			new xjs.HTMLAnchorElement(f.querySelector('.c-Contact__Link') as HTMLAnchorElement).href(d.href)
-			new xjs.Element(f.querySelector('.c-Contact__Icon') !).innerHTML(octicons[d.icon].toSVG({
+			new xjs.Element(f.querySelector('.c-Contact__Icon')!).node.innerHTML = octicons[d.icon].toSVG({
 				width : octicons[d.icon].width  * 1.25, // NB{LINK} src/css/_c-Contact.less#L85 // `.c-Contact__Icon@--font-scale`
 				height: octicons[d.icon].height * 1.25, // NB{LINK} src/css/_c-Contact.less#L85 // `.c-Contact__Icon@--font-scale`
-			}))
+			});
 			f.querySelector('.c-Contact__Link') !.setAttribute('itemprop', d.itemprop)
 			f.querySelector('.c-Contact__Text') !.textContent = d.text
 		}, dataset)
@@ -205,7 +205,5 @@ export default async (data: ResumePerson|Promise<ResumePerson>, opts?: OptsTypeR
 		console.error(e)
 		throw e
 	}
-	// return Processor.processAsync(doc, instructions, data, opts) // TODO on template-processor^2
-	await instructions(doc/*.cloneNode(true) as Document*/, await data, await opts || {}) // BUG https://github.com/jsdom/jsdom/issues/2497
-	return doc
+	return Processor.processAsync(doc, instructions, data, opts);
 }

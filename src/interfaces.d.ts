@@ -54,7 +54,7 @@ export interface JobPosition extends sdo.JobPosting {
 	identifier: string;
 	title: string;
 	hiringOrganization: sdo.Organization & {
-		'@type': string; // TODO remove on schemaorg-jsd^0.14
+		'@type': string;
 		name: string;
 	};
 	jobLocation: ResumeCity;
