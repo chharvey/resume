@@ -4,7 +4,9 @@ import * as url from 'url'
 import * as util from 'util'
 
 import {NodeObject} from 'jsonld';
-import * as Ajv from 'ajv'
+import Ajv, {
+	ErrorObject as AjvErrorObject,
+} from 'ajv';
 import * as jsdom from 'jsdom'
 
 import {requireJSON} from '@chharvey/requirejson';
@@ -188,14 +190,16 @@ const instructions = async (document: Document, data: ResumePerson, opts: OptsTy
 }
 
 export default async (data: ResumePerson|Promise<ResumePerson>, opts?: OptsTypeResume|Promise<OptsTypeResume>): Promise<Document> => {
-	let ajv: Ajv.Ajv = new Ajv()
+	const ajv: Ajv = new Ajv({
+		strict: false,
+	});
 	ajv
 		.addMetaSchema(await sdo_jsd.META_SCHEMATA)
 		.addSchema(await sdo_jsd.JSONLD_SCHEMA)
 		.addSchema(await sdo_jsd.SCHEMATA)
 	let is_data_valid: boolean = ajv.validate(await RESUME_SCHEMA, await data) as boolean
 	if (!is_data_valid) {
-		let e: TypeError & { filename?: string; details?: Ajv.ErrorObject } = new TypeError(ajv.errors ![0].message)
+		const e: TypeError & {filename?: string; details?: AjvErrorObject} = new TypeError(ajv.errors![0].message);
 		e.filename = 'resume.json'
 		e.details = ajv.errors ![0]
 		console.error(e)
