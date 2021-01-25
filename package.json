@@ -34,7 +34,7 @@
     "gulp-typescript": "^5.0.0",
     "make-dir": "^3.0.0",
     "still-alive": "github:chharvey/still-alive#v1.4.3",
-    "typescript": "~3.8.0",
+    "typescript": "^4.1.3",
     "xmeter": "^7.1.0-beta.0"
   },
   "dependencies": {
@@ -43,11 +43,11 @@
     "ajv": "^7.0.0",
     "aria-patterns": "^2.0.0-alpha.0",
     "extrajs": "^0.21.0",
-    "extrajs-dom": "^5.0.0",
+    "extrajs-dom": "^6.0.0-beta.0",
     "extrajs-geo": "^0.1.0",
-    "jsdom": "^12.0.0",
+    "jsdom": "^16.4.0",
     "octicons": "^8.2.0",
     "schemaorg-jsd": "^0.17.0",
-    "template-processor": "^1.1.0"
+    "template-processor": "^2.0.0-alpha.0"
   }
 }
