@@ -20,11 +20,11 @@ const xSkill: Processor<Skill> = new Processor(
 		frag.querySelector('slot[name="percentage"]') !.textContent = `${100 * data.ratingValue}`
 		new xjs.HTMLElement(frag.querySelector<HTMLMeterElement>('[itemprop="ratingValue"]')!)
 			.attr('value', data.ratingValue) // .value(data.ratingValue) // TODO xjs.HTMLMeterElement
-			.exe(function () {
+			.run((self) => {
 				try {
-					this.style('--fadein', data.ratingValue) // NB https://github.com/tmpvar/jsdom/issues/1895
+					self.style('--fadein', data.ratingValue); // NB https://github.com/tmpvar/jsdom/issues/1895
 				} catch (e) {
-					this.node.setAttribute('style', this.node.getAttribute('style') !.replace('1', `${data.ratingValue}`))
+					self.node.setAttribute('style', self.node.getAttribute('style')!.replace('1', `${ data.ratingValue }`));
 				}
 			})
 	},
