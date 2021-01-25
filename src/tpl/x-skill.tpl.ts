@@ -18,7 +18,7 @@ const xSkill: Processor<Skill> = new Processor(
 	(frag, data) => {
 		frag.querySelector('dt') !.innerHTML = data.name
 		frag.querySelector('slot[name="percentage"]') !.textContent = `${100 * data.ratingValue}`
-		new xjs.HTMLElement(frag.querySelector('[itemprop="ratingValue"]') as HTMLMeterElement)
+		new xjs.HTMLElement(frag.querySelector<HTMLMeterElement>('[itemprop="ratingValue"]')!)
 			.attr('value', data.ratingValue) // .value(data.ratingValue) // TODO xjs.HTMLMeterElement
 			.exe(function () {
 				try {

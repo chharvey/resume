@@ -26,19 +26,19 @@ const xPosition: Processor<JobPosition> = new Processor(
 		frag.querySelector('[itemprop="title"]') !.innerHTML = data.title
 		frag.querySelector('[itemprop="hiringOrganization"]') !.setAttribute('itemtype', `http://schema.org/${data.hiringOrganization['@type']}`)
 		frag.querySelector('[itemprop="hiringOrganization"] [itemprop="name"]') !.innerHTML = data.hiringOrganization.name
-		new xjs.HTMLAnchorElement(frag.querySelector('[itemprop="hiringOrganization"] [itemprop="url"]') as HTMLAnchorElement)
+		new xjs.HTMLAnchorElement(frag.querySelector<HTMLAnchorElement>('[itemprop="hiringOrganization"] [itemprop="url"]')!)
 			.href(data.hiringOrganization.url || null)
 
-		new xjs.HTMLTimeElement(frag.querySelectorAll('.c-Position__Dates > time')[0] as HTMLTimeElement)
+		new xjs.HTMLTimeElement(frag.querySelectorAll<HTMLTimeElement>('.c-Position__Dates > time')[0])
 			.dateTime(date_start.toISOString())
 			.textContent(xjs_Date.format(date_start, 'M Y'))
 		if (date_end) {
-			new xjs.HTMLTimeElement(frag.querySelectorAll('.c-Position__Dates > time')[1] as HTMLTimeElement)
+			new xjs.HTMLTimeElement(frag.querySelectorAll<HTMLTimeElement>('.c-Position__Dates > time')[1])
 				.dateTime(date_end)
 				.textContent(xjs_Date.format(date_end, 'M Y'))
 			frag.querySelectorAll('.c-Position__Dates > time')[2].remove()
 		} else {
-			;(frag.querySelectorAll('.c-Position__Dates > time')[2] as HTMLTimeElement).dateTime = new Date().toISOString()
+			(frag.querySelectorAll<HTMLTimeElement>('.c-Position__Dates > time')[2]).dateTime = new Date().toISOString();
 			frag.querySelectorAll('.c-Position__Dates > time')[1].remove()
 		}
 
@@ -46,7 +46,7 @@ const xPosition: Processor<JobPosition> = new Processor(
 			.append(xCity.process(data.jobLocation, { itemprop: 'jobLocation' }))
 			.trimInner()
 
-		new xjs.HTMLUListElement(frag.querySelector('.c-Position__Body') as HTMLUListElement).populate((f, d) => {
+		new xjs.HTMLUListElement(frag.querySelector<HTMLUListElement>('.c-Position__Body')!).populate((f, d) => {
 			f.querySelector('li') !.innerHTML = d
 		}, descriptions)
 

@@ -72,7 +72,7 @@ export default async (data: ResumePerson|Promise<ResumePerson>, opts?: OptsTypeR
 			dev_env = false
 		}
 		if (!dev_env) {
-			;(document.querySelectorAll('link[rel~="stylesheet"][data-local]') as NodeListOf<HTMLLinkElement>).forEach((link) => {
+			(document.querySelectorAll<HTMLLinkElement>('link[rel~="stylesheet"][data-local]')).forEach((link) => {
 				let matches: RegExpMatchArray|null = link.href.match(/[\w\-]*\.css/)
 				if (matches === null) throw new ReferenceError(`No regex match found in \`${link.href}\`.`)
 				link.href = url.resolve(`https://cdn.jsdelivr.net/npm/@chharvey/resume@${VERSION}/`, path.join('./dist/css/', matches[0]))
@@ -89,8 +89,8 @@ export default async (data: ResumePerson|Promise<ResumePerson>, opts?: OptsTypeR
 			})
 		)
 
-		new xjs.HTMLUListElement(document.querySelector('main header address ul.c-Contact') as HTMLUListElement).populate((f, d) => {
-			new xjs.HTMLAnchorElement(f.querySelector('.c-Contact__Link') as HTMLAnchorElement).href(d.href)
+		new xjs.HTMLUListElement(document.querySelector<HTMLUListElement>('main header address ul.c-Contact')!).populate((f, d) => {
+			new xjs.HTMLAnchorElement(f.querySelector<HTMLAnchorElement>('.c-Contact__Link')!).href(d.href);
 			new xjs.Element(f.querySelector('.c-Contact__Icon')!).node.innerHTML = octicons[d.icon].toSVG({
 				width : octicons[d.icon].width  * 1.25, // NB{LINK} src/css/_c-Contact.less#L85 // `.c-Contact__Icon@--font-scale`
 				height: octicons[d.icon].height * 1.25, // NB{LINK} src/css/_c-Contact.less#L85 // `.c-Contact__Icon@--font-scale`
@@ -129,7 +129,7 @@ export default async (data: ResumePerson|Promise<ResumePerson>, opts?: OptsTypeR
 			...(data.$degrees || []).map((item) => xDegree.process(item))
 		)
 
-		new xjs.HTMLUListElement(document.querySelector('.o-Grid--skillGroups') as HTMLUListElement).populate((f, d) => {
+		new xjs.HTMLUListElement(document.querySelector<HTMLUListElement>('.o-Grid--skillGroups')!).populate((f, d) => {
 			f.querySelector('.o-List__Item'    ) !.id          = `${d.identifier}-item` // TODO fix this after fixing hidden-ness
 			f.querySelector('.c-Position'      ) !.id          = d.identifier
 			f.querySelector('.c-Position__Name') !.textContent = d.name
@@ -138,21 +138,21 @@ export default async (data: ResumePerson|Promise<ResumePerson>, opts?: OptsTypeR
 			)
 		}, data.$skills || [])
 
-		new xjs.HTMLUListElement(document.querySelector('#skills .o-List--print') as HTMLUListElement).populate((f, d) => {
+		new xjs.HTMLUListElement(document.querySelector<HTMLUListElement>('#skills .o-List--print')!).populate((f, d) => {
 			f.querySelector('li') !.innerHTML = d.innerHTML
 		}, [...document.querySelector('.o-Grid--skillGroups') !.querySelectorAll('dt.o-Grid__Item')])
 
-		const templateElExp: HTMLTemplateElement = document.querySelector('template#experience') as HTMLTemplateElement
+		const templateElExp: HTMLTemplateElement = document.querySelector<HTMLTemplateElement>('template#experience')!;
 		const xPositionGroup: Processor<JobPositionGroup, object> = new Processor(templateElExp, (frag, datagroup) => {
 			frag.querySelector('.o-Grid__Item--exp') !.id = datagroup.identifier
 			frag.querySelector('.c-ExpHn') !.textContent = datagroup.name
-			new xjs.HTMLUListElement(frag.querySelector('ul.o-List') as HTMLUListElement).populate((f, d) => {
+			new xjs.HTMLUListElement(frag.querySelector<HTMLUListElement>('ul.o-List')!).populate((f, d) => {
 				new xjs.HTMLLIElement(f.querySelector('li') !).empty().append(xPosition.process(d))
 			}, datagroup.itemListElement)
 		})
 		templateElExp.after(...(data.$positions || []).map((group) => xPositionGroup.process(group)))
 
-		const templateElAch: HTMLTemplateElement = document.querySelector('template#achievements') as HTMLTemplateElement
+		const templateElAch: HTMLTemplateElement = document.querySelector<HTMLTemplateElement>('template#achievements')!;
 		function achievementGroupProcessorGenerator<T>(processor: Processor<T, object>): Processor<{
 			name           : string;
 			identifier     : string;
@@ -163,7 +163,7 @@ export default async (data: ResumePerson|Promise<ResumePerson>, opts?: OptsTypeR
 			return new Processor(templateElAch, (frag, datagroup, optsgroup) => {
 				frag.querySelector('.o-Grid__Item--exp') !.id = datagroup.identifier
 				frag.querySelector('.c-ExpHn') !.textContent = datagroup.name
-				new xjs.HTMLDListElement(frag.querySelector('.o-ListAchv') as HTMLDListElement).empty()
+				new xjs.HTMLDListElement(frag.querySelector<HTMLDListElement>('.o-ListAchv')!).empty()
 					.replaceClassString('{{ classes }}', optsgroup.classes || '')
 					.append(...datagroup.itemListElement.map((item) => processor.process(item)))
 			})

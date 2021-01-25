@@ -40,8 +40,8 @@ const xCity: Processor<ResumeCity, OptsTypeXCity> = new Processor(
 			.append(xAddress.process(data.address as any /* FIXME update aria-patterns */, { regionName: opts.regionName }))
 
 		frag.querySelector('[itemprop="addressLocality"]') !.textContent = data.address.addressLocality
-		;(frag.querySelector('[itemprop="latitude"]' ) as HTMLMetaElement).content = `${data.geo.latitude}`
-		;(frag.querySelector('[itemprop="longitude"]') as HTMLMetaElement).content = `${data.geo.longitude}`
+		;(frag.querySelector<HTMLMetaElement>('[itemprop="latitude"]')!).content  = `${ data.geo.latitude }`
+		;(frag.querySelector<HTMLMetaElement>('[itemprop="longitude"]')!).content = `${ data.geo.longitude }`
 	},
 );
 export default xCity

@@ -26,12 +26,12 @@ const xProdev: Processor<Prodev> = new Processor(
 		frag.querySelector('[itemprop="name"]') !.innerHTML = data.name
 		new xjs.Element(frag.querySelector('slot[name="city"]') !).empty()
 			.append(xCity.process(data.location))
-		new xjs.HTMLTimeElement(frag.querySelector('.o-ListAchv__Award > time') as HTMLTimeElement)
+		new xjs.HTMLTimeElement(frag.querySelector<HTMLTimeElement>('.o-ListAchv__Award > time')!)
 			.dateTime(`PT${pdh}H`)
 			.textContent(`${pdh} hr`)
 
-		frag.querySelectorAll('[itemprop~="endDate"]').forEach((time) => {
-			new xjs.HTMLTimeElement(time as HTMLTimeElement)
+		frag.querySelectorAll<HTMLTimeElement>('[itemprop~="endDate"]').forEach((time) => {
+			new xjs.HTMLTimeElement(time)
 				.dateTime(date_end)
 				.textContent(xjs_Date.format(date_end, 'j M Y'))
 		})
@@ -41,7 +41,7 @@ const xProdev: Processor<Prodev> = new Processor(
 			let same_UTC_date  = date_start.getUTCDate () === date_end.getUTCDate ()
 			let same_UTC_month = date_start.getUTCMonth() === date_end.getUTCMonth()
 			let same_UTC_year  = date_start.getFullYear() === date_end.getFullYear()
-			new xjs.HTMLTimeElement(frag.querySelector('[itemprop="startDate"]') as HTMLTimeElement)
+			new xjs.HTMLTimeElement(frag.querySelector<HTMLTimeElement>('[itemprop="startDate"]')!)
 				.dateTime(date_start)
 				.textContent([
 					date_start.getUTCDate(),
